@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComplyCheck — Ley 21.719 Chile</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d0f14; color: #e8eaf0; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+  header { border-bottom: 1px solid #1e2130; padding: 0 24px; }
+  .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #3b6bff, #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-name { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+  .logo-badge { font-size: 11px; background: #1e2130; color: #6b7aaa; padding: 2px 8px; border-radius: 4px; }
+  .status-real { color: #22c55e; font-size: 12px; }
+  .status-est { color: #f59e0b; font-size: 12px; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 24px; }
+  .hero { text-align: center; margin-bottom: 36px; }
+  .hero-eyebrow { font-size: 13px; color: #3b6bff; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  .hero h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 12px; }
+  .hero h1 span { background: linear-gradient(90deg, #3b6bff, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: #6b7aaa; font-size: 15px; max-width: 480px; margin: 0 auto; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 28px; background: #131520; padding: 4px; border-radius: 10px; width: fit-content; }
+  .tab { padding: 8px 20px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: #4a5280; }
+  .tab.active { background: #1e2eff22; color: #6b9bff; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+  input[type=text], input[type=url] { background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; padding: 10px 14px; color: #e8eaf0; font-size: 14px; outline: none; width: 100%; }
+  .input-row { display: flex; gap: 10px; }
+  .input-row input { flex: 1; }
+  .btn-primary { padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+  .btn-secondary { padding: 6px 14px; border-radius: 6px; border: 1px solid #1e2130; background: #1e2130; color: #a0aec0; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-purple { padding: 8px 18px; border-radius: 7px; border: none; background: #7c3aed; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; }
+  .error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
+  .loading { text-align: center; padding: 48px; color: #4a5280; display: none; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .form-field label { font-size: 12px; color: #6b7aaa; display: block; margin-bottom: 4px; }
+  .doc-types { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+  .doc-type { padding: 10px 14px; border-radius: 8px; border: 1px solid #1e2130; background: transparent; color: #6b7aaa; cursor: pointer; text-align: left; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .doc-type.active { border-color: #3b6bff; background: #1e2eff15; color: #6b9bff; }
+  .score-card { display: flex; align-items: center; gap: 24px; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge-real { color: #22c55e; background: #22c55e11; }
+  .badge-est { color: #f59e0b; background: #f59e0b11; }
+  .checks { display: grid; gap: 8px; margin-bottom: 16px; }
+  .check-item { background: #131520; border-radius: 10px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 14px; }
+  .check-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .acciones { background: #1a1020; border: 1px solid #7c3aed33; border-radius: 12px; padding: 20px; display: none; }
+  .empty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .empty-card { background: #131520; border: 1px solid #1e2130; border-radius: 10px; padding: 14px; }
+  .doc-result { background: #131520; border: 1px solid #22c55e33; border-radius: 12px; padding: 24px; display: none; }
+  .doc-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; justify-content: space-between; font-size: 12px; color: #2e3450; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">✓</div>
+      <span class="logo-name">ComplyCheck</span>
+      <span class="logo-badge">Ley 21.719 Chile</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="status-indicator" class="status-est">⚠ Verificando…</span>
+      <span style="font-size:12px;color:#4a5280">Vigencia: 1 dic 2026</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">
+    ⚠️ <strong>Modo estimado:</strong> No se pudo conectar al servidor. El análisis es estimado por IA.
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Nueva Ley de Protección de Datos</div>
+    <h1>¿Tu empresa está lista<br><span>para diciembre?</span></h1>
+    <p>Detecta falencias en tu sitio web y genera los documentos legales para cumplir con la Ley 21.719.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('audit')">🔍 Auditar sitio web</button>
+    <button class="tab" onclick="switchTab('docs')">📄 Generar documentos</button>
+  </div>
+
+  <!-- AUDIT -->
+  <div class="panel active" id="panel-audit">
+    <div class="card">
+      <label style="font-size:13px;color:#6b7aaa;display:block;margin-bottom:8px">Ingresa la URL de tu sitio web</label>
+      <div class="input-row">
+        <input type="url" id="url-input" placeholder="https://tuempresa.cl" onkeydown="if(event.key==='Enter')runAudit()">
+        <button class="btn-primary" id="btn-analizar" onclick="runAudit()">Analizar</button>
+      </div>
+      <div class="error" id="audit-error"></div>
+    </div>
+    <div class="loading" id="audit-loading"><div style="font-size:32px;margin-bottom:12px">🔍</div><div id="audit-step">Iniciando…</div></div>
+    <div id="audit-result" style="display:none">
+      <div class="card score-card">
+        <div style="text-align:center;min-width:80px">
+          <div id="score-num" style="font-size:44px;font-weight:800;line-height:1">—</div>
+          <div style="font-size:11px;color:#4a5280;margin-top:4px">cumplimiento</div>
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span id="result-url" style="font-weight:600;font-size:14px"></span>
+            <span class="badge" id="result-badge"></span>
+          </div>
+          <div id="result-resumen" style="color:#8b9bc0;font-size:13px;line-height:1.6"></div>
+        </div>
+        <button class="btn-secondary" onclick="descargarReporte()">📥 Descargar reporte</button>
+      </div>
+      <div class="checks" id="checks-list"></div>
+      <div class="acciones" id="acciones-box">
+        <div style="font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:12px">⚡ Acciones prioritarias</div>
+        <div id="acciones-list"></div>
+        <button class="btn-purple" onclick="switchTab('docs')">Generar documentos de cumplimiento →</button>
+      </div>
+    </div>
+    <div class="empty-grid" id="audit-empty">
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Política de Privacidad</div><div style="font-size:11px;color:#4a5280">Documento sobre tratamiento de datos</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Banner de Cookies</div><div style="font-size:11px;color:#4a5280">Consentimiento explícito de cookies</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Consentimiento Formularios</div><div style="font-size:11px;color:#4a5280">Checkbox antes de enviar datos</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Contacto Responsable</div><div style="font-size:11px;color:#4a5280">Email para ejercer derechos ARCO</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Finalidad del Tratamiento</div><div style="font-size:11px;color:#4a5280">Para qué se usan los datos</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Derechos ARCO</div><div style="font-size:11px;color:#4a5280">Acceso, rectificación, cancelación</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Plazo de Conservación</div><div style="font-size:11px;color:#4a5280">Cuánto tiempo se guardan datos</div></div>
+      <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Transferencia a Terceros</div><div style="font-size:11px;color:#4a5280">Si se comparten datos con proveedores</div></div>
+    </div>
+  </div>
+
+  <!-- DOCS -->
+  <div class="panel" id="panel-docs">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:16px">Datos de tu empresa</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Nombre empresa *</label><input type="text" id="f-nombre" placeholder="Empresa SpA"></div>
+        <div class="form-field"><label>RUT</label><input type="text" id="f-rut" placeholder="76.XXX.XXX-X"></div>
+        <div class="form-field"><label>Rubro / actividad *</label><input type="text" id="f-rubro" placeholder="Software, clínica, comercio, etc."></div>
+        <div class="form-field"><label>Email responsable de datos</label><input type="text" id="f-email" placeholder="privacidad@empresa.cl"></div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:10px">Tipo de documento</div>
+      <div class="doc-types">
+        <button class="doc-type active" onclick="selectDoc('politica',this)">🔒 Política de Privacidad</button>
+        <button class="doc-type" onclick="selectDoc('cookies',this)">🍪 Aviso de Cookies</button>
+        <button class="doc-type" onclick="selectDoc('consentimiento',this)">✅ Cláusula de Consentimiento</button>
+        <button class="doc-type" onclick="selectDoc('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
+      </div>
+      <div class="error" id="doc-error"></div>
+      <button class="btn-primary" id="btn-generar" onclick="generateDoc()" style="width:100%;padding:12px">Generar documento con IA</button>
+    </div>
+    <div class="loading" id="doc-loading"><div style="font-size:32px;margin-bottom:12px">⚖️</div><div>Redactando documento conforme a la Ley 21.719…</div></div>
+    <div class="doc-result" id="doc-result">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento generado</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-secondary" id="btn-copiar" onclick="copiarDoc()">Copiar texto</button>
+          <button class="btn-secondary" onclick="descargarDoc()">📥 Descargar reporte</button>
+        </div>
+      </div>
+      <pre class="doc-text" id="doc-text"></pre>
+    </div>
+  </div>
+
+  <footer>
+    <span>ComplyCheck — Ley 21.719 (vigencia 1 dic 2026)</span>
+    <span>Documentos orientativos. Consulte a un abogado.</span>
+  </footer>
+</main>
+
+<script>
+const BACKEND = "https://complycheck-server-production.up.railway.app";
+const API = "https://api.anthropic.com/v1/messages";
+const CHECKS_META = {
+  politica_privacidad:"Política de Privacidad",cookies:"Banner de Cookies",
+  consentimiento_formularios:"Consentimiento en Formularios",contacto_responsable:"Contacto Responsable",
+  finalidad_datos:"Finalidad del Tratamiento",derechos_arco:"Derechos ARCO",
+  plazo_conservacion:"Plazo de Conservación",transferencia_terceros:"Transferencia a Terceros"
+};
+const DOC_LABELS = {
+  politica:"Política de Privacidad completa",cookies:"Aviso y política de Cookies",
+  consentimiento:"Cláusula de Consentimiento para formularios web",
+  contrato_encargado:"Contrato de Encargado de Datos Personales"
+};
+let currentAudit=null, currentDoc="", currentDocType="politica", backendOk=false;
+
+const sc = s => s==="ok"?"#22c55e":s==="warn"?"#f59e0b":s==="fail"?"#ef4444":"#374151";
+const sl = s => s==="ok"?"Cumple":s==="warn"?"Revisar":s==="fail"?"Falta":"—";
+const se = s => s==="ok"?"✅":s==="warn"?"⚠️":"❌";
+
+async function checkBackend(){
+  try {
+    const r = await fetch(BACKEND+"/health");
+    const d = await r.json();
+    if(d.ok){ backendOk=true; document.getElementById("status-indicator").textContent="● Escaneo real activo"; document.getElementById("status-indicator").className="status-real"; }
+  } catch(e){ document.getElementById("warn-banner").style.display="block"; document.getElementById("status-indicator").textContent="⚠ Análisis estimado"; }
+}
+
+async function callClaude(content){
+  const r = await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2000,messages:[{role:"user",content}]})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e?.error?.message||"Error "+r.status);}
+  const d=await r.json(); return d.content?.find(b=>b.type==="text")?.text||"";
+}
+
+function switchTab(t){
+  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("active",(i===0&&t==="audit")||(i===1&&t==="docs")));
+  document.getElementById("panel-audit").classList.toggle("active",t==="audit");
+  document.getElementById("panel-docs").classList.toggle("active",t==="docs");
+}
+
+function selectDoc(type,el){
+  currentDocType=type;
+  document.querySelectorAll(".doc-type").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+}
+
+async function runAudit(){
+  const url=document.getElementById("url-input").value.trim();
+  if(!url)return;
+  const errEl=document.getElementById("audit-error");
+  errEl.style.display="none";
+  document.getElementById("btn-analizar").disabled=true;
+  document.getElementById("audit-loading").style.display="block";
+  document.getElementById("audit-result").style.display="none";
+  document.getElementById("audit-empty").style.display="none";
+  try {
+    let senales=null,htmlReal=false;
+    if(backendOk){
+      document.getElementById("audit-step").textContent="Descargando HTML del sitio…";
+      try{
+        const sr=await fetch(BACKEND+"/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+        const sd=await sr.json();
+        if(sd.ok){senales=sd.senales;htmlReal=true;}
+      }catch(e){}
+    }
+    document.getElementById("audit-step").textContent="Analizando con IA…";
+    let ctx="Sitio a auditar: "+url+"\n\n";
+    if(htmlReal&&senales){
+      ctx+="SEÑALES REALES del HTML:\n"+
+        "- Link privacidad: "+senales.tiene_link_privacidad+"\n"+
+        "- Texto privacidad: "+senales.tiene_texto_privacidad+"\n"+
+        "- Banner cookies: "+senales.tiene_banner_cookies+"\n"+
+        "- Checkbox consentimiento: "+senales.tiene_checkbox_consentimiento+"\n"+
+        "- Formularios: "+senales.num_formularios+" ("+senales.num_inputs_email+" email fields)\n"+
+        "- Email datos: "+senales.tiene_email_contacto+"\n"+
+        "- Contacto responsable: "+senales.tiene_contacto_datos+"\n"+
+        "- Finalidad: "+senales.tiene_finalidad+"\n"+
+        "- ARCO: "+senales.tiene_arco+"\n"+
+        "- Plazo: "+senales.tiene_plazo+"\n"+
+        "- Terceros: "+senales.tiene_terceros+"\n"+
+        "- HTTPS: "+senales.tiene_https+"\n- Título: "+senales.titulo+"\n\nEvalúa basándote en estas señales REALES.";
+    } else { ctx+="No se pudo acceder al HTML. Evalúa de forma estimada."; }
+    const prompt="Eres auditor experto en Ley 21.719 Chile (vigencia 1 dic 2026).\n\n"+ctx+"\n\nResponde SOLO JSON sin markdown:\n"+
+      '{"url":"'+url+'","es_analisis_real":'+htmlReal+',"resumen":"2 oraciones","checks":['+
+      '{"id":"politica_privacidad","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"cookies","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"consentimiento_formularios","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"contacto_responsable","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"finalidad_datos","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"derechos_arco","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"plazo_conservacion","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
+      '{"id":"transferencia_terceros","status":"ok o warn o fail","detalle":"max 12 palabras"}'+
+      '],"acciones_prioritarias":["a1","a2","a3"]}';
+    const text=await callClaude(prompt);
+    currentAudit=JSON.parse(text.replace(/```json|```/g,"").trim());
+    renderAudit(currentAudit);
+  } catch(e){ errEl.textContent="Error: "+e.message; errEl.style.display="block"; document.getElementById("audit-empty").style.display="grid"; }
+  document.getElementById("audit-loading").style.display="none";
+  document.getElementById("btn-analizar").disabled=false;
+}
+
+function renderAudit(data){
+  const score=Math.round(data.checks.filter(c=>c.status==="ok").length/data.checks.length*100);
+  const col=score>=75?"#22c55e":score>=40?"#f59e0b":"#ef4444";
+  document.getElementById("score-num").textContent=score+"%";
+  document.getElementById("score-num").style.color=col;
+  document.getElementById("result-url").textContent=data.url;
+  document.getElementById("result-resumen").textContent=data.resumen;
+  const badge=document.getElementById("result-badge");
+  if(data.es_analisis_real){badge.textContent="● HTML real";badge.className="badge badge-real";}
+  else{badge.textContent="⚠ Estimado";badge.className="badge badge-est";}
+  document.getElementById("checks-list").innerHTML=data.checks.map(c=>
+    '<div class="check-item" style="border:1px solid '+sc(c.status)+'33">'+
+    '<div class="check-dot" style="background:'+sc(c.status)+'"></div>'+
+    '<div><div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">'+
+    '<span style="font-weight:600;font-size:13px">'+(CHECKS_META[c.id]||c.id)+'</span>'+
+    '<span style="font-size:11px;color:'+sc(c.status)+';font-weight:600">'+sl(c.status)+'</span></div>'+
+    '<div style="font-size:12px;color:#6b7aaa">'+c.detalle+'</div></div></div>'
+  ).join("");
+  if(data.acciones_prioritarias&&data.acciones_prioritarias.length){
+    document.getElementById("acciones-list").innerHTML=data.acciones_prioritarias.map((a,i)=>
+      '<div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px;color:#c4b5fd"><span style="color:#7c3aed;font-weight:700">'+(i+1)+'.</span><span>'+a+'</span></div>'
+    ).join("");
+    document.getElementById("acciones-box").style.display="block";
+  }
+  document.getElementById("audit-result").style.display="block";
+}
+
+async function generateDoc(){
+  const nombre=document.getElementById("f-nombre").value.trim();
+  const rubro=document.getElementById("f-rubro").value.trim();
+  const rut=document.getElementById("f-rut").value.trim();
+  const email=document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
+  const errEl=document.getElementById("doc-error");
+  if(!nombre||!rubro){errEl.textContent="Ingresa el nombre y rubro.";errEl.style.display="block";return;}
+  errEl.style.display="none";
+  document.getElementById("btn-generar").disabled=true;
+  document.getElementById("doc-loading").style.display="block";
+  document.getElementById("doc-result").style.display="none";
+  try {
+    const prompt="Eres abogado especialista en Ley 21.719 de Protección de Datos Personales de Chile.\n\n"+
+      "Genera: "+DOC_LABELS[currentDocType]+"\nEmpresa: "+nombre+"\nRUT: "+(rut||"No indicado")+"\nRubro: "+rubro+"\nEmail: "+email+"\n\n"+
+      "Cumplir Ley 21.719 (vigente 1 dic 2026), español chileno formal, secciones numeradas, listo para usar.";
+    currentDoc=await callClaude(prompt);
+    document.getElementById("doc-text").textContent=currentDoc;
+    document.getElementById("doc-result").style.display="block";
+  } catch(e){errEl.textContent="Error: "+e.message;errEl.style.display="block";}
+  document.getElementById("doc-loading").style.display="none";
+  document.getElementById("btn-generar").disabled=false;
+}
+
+function copiarDoc(){
+  navigator.clipboard.writeText(currentDoc);
+  const b=document.getElementById("btn-copiar");
+  b.textContent="¡Copiado!";b.style.color="#22c55e";
+  setTimeout(()=>{b.textContent="Copiar texto";b.style.color="";},2000);
+}
+
+function descargarReporte(){
+  if(!currentAudit)return;
+  const score=Math.round(currentAudit.checks.filter(c=>c.status==="ok").length/currentAudit.checks.length*100);
+  const col=score>=75?"#16a34a":score>=40?"#d97706":"#dc2626";
+  const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
+  const filas=currentAudit.checks.map(c=>"<tr style='border-bottom:1px solid #e5e7eb'><td style='padding:9px 8px;font-size:13px;font-weight:600'>"+(CHECKS_META[c.id]||c.id)+"</td><td style='padding:9px 8px;text-align:center'>"+se(c.status)+" "+sl(c.status)+"</td><td style='padding:9px 8px;font-size:12px;color:#4b5563'>"+c.detalle+"</td></tr>").join("");
+  const acciones=(currentAudit.acciones_prioritarias||[]).map((a,i)=>"<li style='margin-bottom:8px;font-size:13px'>"+a+"</li>").join("");
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte ComplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body>"+
+    "<div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'>"+
+    "<div><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Reporte de Cumplimiento · Ley 21.719 Chile</div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>ComplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af;margin-top:2px'>"+fecha+" · Vigencia: 1 dic 2026</div></div>"+
+    "<div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div>"+
+    "<div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div>"+
+    "<h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table>"+
+    "<h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol>"+
+    "<div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por ComplyCheck · Ley N° 21.719 · Orientativo.</div>"+
+    "<button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="complycheck-reporte.html";a.click();
+}
+
+function descargarDoc(){
+  if(!currentDoc)return;
+  const nombre=document.getElementById("f-nombre").value.trim();
+  const rut=document.getElementById("f-rut").value.trim();
+  const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
+  const contenido=currentDoc.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body>"+
+    "<div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal · Ley 21.719 Chile</div>"+
+    "<h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1>"+
+    "<div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div>"+
+    "<div>"+contenido+"</div>"+
+    "<div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por ComplyCheck · Ley N° 21.719 · Orientativo.</div>"+
+    "<button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="complycheck-documento.html";a.click();
+}
+
+checkBackend();
+</script>
+</body>
+</html>
