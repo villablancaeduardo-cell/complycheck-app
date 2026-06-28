@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ComplyCheck — Ley 21.719 Chile</title>
+<title>CumplyCheck — Ley 21.719 Chile</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #0d0f14; color: #e8eaf0; font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
@@ -61,7 +61,7 @@
   <div class="header-inner">
     <div class="logo">
       <div class="logo-icon">✓</div>
-      <span class="logo-name">ComplyCheck</span>
+      <span class="logo-name">CumplyCheck</span>
       <span class="logo-badge">Ley 21.719 Chile</span>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
@@ -158,7 +158,7 @@
     </div>
   </div>
   <footer>
-    <span>ComplyCheck — Ley 21.719 (vigencia 1 dic 2026)</span>
+    <span>CumplyCheck — Ley 21.719 (vigencia 1 dic 2026)</span>
     <span>Documentos orientativos. Consulte a un abogado.</span>
   </footer>
 </main>
@@ -306,8 +306,8 @@ function descargarReporte(){
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const filas=currentAudit.checks.map(c=>"<tr style='border-bottom:1px solid #e5e7eb'><td style='padding:9px 8px;font-size:13px;font-weight:600'>"+(CHECKS_META[c.id]||c.id)+"</td><td style='padding:9px 8px;text-align:center'>"+se(c.status)+" "+sl(c.status)+"</td><td style='padding:9px 8px;font-size:12px;color:#4b5563'>"+c.detalle+"</td></tr>").join("");
   const acciones=(currentAudit.acciones_prioritarias||[]).map((a,i)=>"<li style='margin-bottom:8px;font-size:13px'>"+a+"</li>").join("");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte ComplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Reporte · Ley 21.719 Chile</div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>ComplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af;margin-top:2px'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por ComplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="complycheck-reporte.html";a.click();
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte CumplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Reporte · Ley 21.719 Chile</div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>CumplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af;margin-top:2px'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-reporte.html";a.click();
 }
 
 function descargarDoc(){
@@ -316,8 +316,8 @@ function descargarDoc(){
   const rut=document.getElementById("f-rut").value.trim();
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const contenido=currentDoc.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal · Ley 21.719 Chile</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por ComplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="complycheck-documento.html";a.click();
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal · Ley 21.719 Chile</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-documento.html";a.click();
 }
 
 checkBackend();
