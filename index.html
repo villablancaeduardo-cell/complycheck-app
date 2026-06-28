@@ -70,10 +70,9 @@
     </div>
   </div>
 </header>
-
 <main>
   <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">
-    ⚠️ <strong>Modo estimado:</strong> No se pudo conectar al servidor. El análisis es estimado por IA.
+    ⚠️ <strong>Servidor no disponible.</strong> Intenta más tarde.
   </div>
   <div class="hero">
     <div class="hero-eyebrow">Nueva Ley de Protección de Datos</div>
@@ -163,11 +162,8 @@
     <span>Documentos orientativos. Consulte a un abogado.</span>
   </footer>
 </main>
-
 <script>
 const BACKEND = "https://complycheck-server-production.up.railway.app";
-const API = "https://api.anthropic.com/v1/messages";
-const API_KEY = "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";
 const CHECKS_META = {
   politica_privacidad:"Política de Privacidad",cookies:"Banner de Cookies",
   consentimiento_formularios:"Consentimiento en Formularios",contacto_responsable:"Contacto Responsable",
@@ -179,7 +175,7 @@ const DOC_LABELS = {
   consentimiento:"Cláusula de Consentimiento para formularios web",
   contrato_encargado:"Contrato de Encargado de Datos Personales"
 };
-let currentAudit=null, currentDoc="", currentDocType="politica", backendOk=false;
+let currentAudit=null,currentDoc="",currentDocType="politica",backendOk=false;
 const sc=s=>s==="ok"?"#22c55e":s==="warn"?"#f59e0b":s==="fail"?"#ef4444":"#374151";
 const sl=s=>s==="ok"?"Cumple":s==="warn"?"Revisar":s==="fail"?"Falta":"—";
 const se=s=>s==="ok"?"✅":s==="warn"?"⚠️":"❌";
@@ -188,14 +184,16 @@ async function checkBackend(){
   try{
     const r=await fetch(BACKEND+"/health");
     const d=await r.json();
-    if(d.ok){backendOk=true;document.getElementById("status-indicator").textContent="● Escaneo real activo";document.getElementById("status-indicator").className="status-real";}
-  }catch(e){document.getElementById("warn-banner").style.display="block";document.getElementById("status-indicator").textContent="⚠ Análisis estimado";}
+    if(d.ok){backendOk=true;document.getElementById("status-indicator").textContent="● Servidor activo";document.getElementById("status-indicator").className="status-real";}
+  }catch(e){document.getElementById("warn-banner").style.display="block";document.getElementById("status-indicator").textContent="⚠ Servidor no disponible";}
 }
 
-async function callClaude(content){
-  const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","anthropic-dangerous-direct-browser-access":"true","x-api-key":API_KEY,"anthropic-version":"2023-06-01"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:2000,messages:[{role:"user",content}]})});
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e?.error?.message||"Error "+r.status);}
-  const d=await r.json();return d.content?.find(b=>b.type==="text")?.text||"";
+async function callClaude(prompt){
+  const r=await fetch(BACKEND+"/claude",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e?.error||"Error "+r.status);}
+  const d=await r.json();
+  if(!d.ok)throw new Error(d.error||"Error del servidor");
+  return d.text;
 }
 
 function switchTab(t){
@@ -221,14 +219,12 @@ async function runAudit(){
   document.getElementById("audit-empty").style.display="none";
   try{
     let senales=null,htmlReal=false;
-    if(backendOk){
-      document.getElementById("audit-step").textContent="Descargando HTML del sitio…";
-      try{
-        const sr=await fetch(BACKEND+"/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
-        const sd=await sr.json();
-        if(sd.ok){senales=sd.senales;htmlReal=true;}
-      }catch(e){}
-    }
+    document.getElementById("audit-step").textContent="Descargando HTML del sitio…";
+    try{
+      const sr=await fetch(BACKEND+"/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+      const sd=await sr.json();
+      if(sd.ok){senales=sd.senales;htmlReal=true;}
+    }catch(e){}
     document.getElementById("audit-step").textContent="Analizando con IA…";
     let ctx="Sitio a auditar: "+url+"\n\n";
     if(htmlReal&&senales){
