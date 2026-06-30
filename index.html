@@ -26,13 +26,14 @@
   .panel { display: none; }
   .panel.active { display: block; }
   .card { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
-  input[type=text], input[type=url] { background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; padding: 10px 14px; color: #e8eaf0; font-size: 14px; outline: none; width: 100%; }
+  input[type=text], input[type=url], input[type=email] { background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; padding: 10px 14px; color: #e8eaf0; font-size: 14px; outline: none; width: 100%; }
   .input-row { display: flex; gap: 10px; }
   .input-row input { flex: 1; }
   .btn-primary { padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
   .btn-primary:disabled { opacity: 0.6; cursor: wait; }
   .btn-secondary { padding: 6px 14px; border-radius: 6px; border: 1px solid #1e2130; background: #1e2130; color: #a0aec0; font-size: 12px; font-weight: 600; cursor: pointer; }
   .btn-purple { padding: 8px 18px; border-radius: 7px; border: none; background: #7c3aed; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; }
+  .btn-green { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; font-weight: 700; font-size: 15px; width: 100%; }
   .error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
   .loading { text-align: center; padding: 48px; color: #4a5280; display: none; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
@@ -51,31 +52,51 @@
   .empty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .empty-card { background: #131520; border: 1px solid #1e2130; border-radius: 10px; padding: 14px; }
   .doc-result { background: #131520; border: 1px solid #22c55e33; border-radius: 12px; padding: 24px; display: none; }
-  .doc-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; }
-  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 12px; color: #2e3450; }
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a { color: #6b7aaa; text-decoration: none; }
-  .footer-links a:hover { color: #a0aec0; text-decoration: underline; }
+  .doc-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; filter: blur(4px); user-select: none; pointer-events: none; }
+  .doc-text.unlocked { filter: none; user-select: text; pointer-events: auto; }
   .consent-box { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; padding: 14px; background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; }
   .consent-box input[type=checkbox] { margin-top: 2px; width: 16px; height: 16px; accent-color: #3b6bff; cursor: pointer; flex-shrink: 0; }
   .consent-box label { font-size: 12px; color: #8b9bc0; line-height: 1.5; cursor: pointer; }
   .consent-box a { color: #6b9bff; text-decoration: underline; }
 
+  /* Pricing cards */
+  .pricing-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .pricing-card { background: #0d0f14; border: 1px solid #1e2130; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+  .pricing-card:hover { border-color: #3b6bff44; }
+  .pricing-card.selected { border-color: #3b6bff; background: #1e2eff08; }
+  .pricing-card.featured { border-color: #7c3aed; background: #7c3aed08; }
+  .pricing-card.featured.selected { border-color: #7c3aed; background: #7c3aed15; }
+  .pricing-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7aaa; margin-bottom: 8px; }
+  .pricing-label.highlight { color: #a78bfa; }
+  .pricing-price { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+  .pricing-desc { font-size: 12px; color: #6b7aaa; }
+  .pricing-savings { font-size: 11px; color: #22c55e; font-weight: 600; margin-top: 4px; }
+  .lock-overlay { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 32px 24px; text-align: center; margin-bottom: 16px; }
+  .lock-icon { font-size: 40px; margin-bottom: 12px; }
+  .lock-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .lock-desc { font-size: 14px; color: #6b7aaa; margin-bottom: 24px; }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 12px; color: #2e3450; }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: #6b7aaa; text-decoration: none; }
+  .footer-links a:hover { color: #a0aec0; }
+  .cookie-btn-prefs { background: transparent; color: #6b7aaa; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; }
+
+  /* Pago exitoso */
+  .success-banner { background: #052e16; border: 1px solid #16a34a44; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: none; }
+  .success-banner h3 { color: #22c55e; font-size: 16px; margin-bottom: 6px; }
+  .success-banner p { font-size: 13px; color: #86efac; }
+
   /* Cookie banner */
-  #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #131520; border-top: 1px solid #1e2130; padding: 20px 24px; z-index: 1000; box-shadow: 0 -8px 30px rgba(0,0,0,0.4); display: none; }
+  #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #131520; border-top: 1px solid #1e2130; padding: 20px 24px; z-index: 1000; display: none; }
   .cookie-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
   .cookie-text { flex: 1; font-size: 13px; color: #b8c0d8; line-height: 1.5; min-width: 240px; }
   .cookie-text a { color: #6b9bff; text-decoration: underline; }
   .cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
-  .cookie-btn { padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .cookie-btn { padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
   .cookie-btn-accept { background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; }
   .cookie-btn-reject { background: transparent; border: 1px solid #1e2130; color: #a0aec0; }
-  .cookie-btn-prefs { background: transparent; color: #6b9bff; text-decoration: underline; border: none; cursor: pointer; font-size: 12px; }
-
-  /* Cookie preferences modal */
   #cookie-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1001; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .cookie-modal-card { background: #131520; border: 1px solid #1e2130; border-radius: 14px; max-width: 480px; width: 100%; padding: 28px; max-height: 80vh; overflow-y: auto; }
-  .cookie-modal-card h3 { font-size: 18px; margin-bottom: 16px; }
+  .cookie-modal-card { background: #131520; border: 1px solid #1e2130; border-radius: 14px; max-width: 480px; width: 100%; padding: 28px; }
   .cookie-pref-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #1e2130; gap: 12px; }
   .cookie-pref-row:last-of-type { border-bottom: none; }
   .cookie-pref-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
@@ -97,13 +118,16 @@
       <div class="logo-icon">✓</div>
       <span class="logo-name">CumplyCheck</span>
     </div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <span id="status-indicator" class="status-est">⚠ Verificando…</span>
-    </div>
+    <span id="status-indicator" class="status-est">⚠ Verificando…</span>
   </div>
 </header>
 
 <main>
+  <div id="success-banner" class="success-banner">
+    <h3>✅ ¡Pago exitoso!</h3>
+    <p id="success-msg">Tu documento se está generando…</p>
+  </div>
+
   <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">
     ⚠️ <strong>Servidor no disponible.</strong> Intenta más tarde.
   </div>
@@ -119,6 +143,7 @@
     <button class="tab" onclick="switchTab('docs')">📄 Generar documentos</button>
   </div>
 
+  <!-- AUDIT -->
   <div class="panel active" id="panel-audit">
     <div class="card">
       <label style="font-size:13px;color:#6b7aaa;display:block;margin-bottom:8px">Ingresa la URL de tu sitio web</label>
@@ -128,9 +153,7 @@
       </div>
       <div class="error" id="audit-error"></div>
     </div>
-
     <div class="loading" id="audit-loading"><div style="font-size:32px;margin-bottom:12px">🔍</div><div id="audit-step">Iniciando…</div></div>
-
     <div id="audit-result" style="display:none">
       <div class="card score-card">
         <div style="text-align:center;min-width:80px">
@@ -153,7 +176,6 @@
         <button class="btn-purple" onclick="switchTab('docs')">Generar documentos →</button>
       </div>
     </div>
-
     <div class="empty-grid" id="audit-empty">
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Política de Privacidad</div><div style="font-size:11px;color:#4a5280">Documento sobre tratamiento de datos</div></div>
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Banner de Cookies</div><div style="font-size:11px;color:#4a5280">Consentimiento explícito de cookies</div></div>
@@ -166,6 +188,7 @@
     </div>
   </div>
 
+  <!-- DOCS -->
   <div class="panel" id="panel-docs">
     <div class="card">
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:16px">Datos de tu empresa</div>
@@ -173,9 +196,8 @@
         <div class="form-field"><label>Nombre empresa *</label><input type="text" id="f-nombre" placeholder="Empresa SpA"></div>
         <div class="form-field"><label>RUT</label><input type="text" id="f-rut" placeholder="76.XXX.XXX-X"></div>
         <div class="form-field"><label>Rubro / actividad *</label><input type="text" id="f-rubro" placeholder="Software, clínica, comercio, etc."></div>
-        <div class="form-field"><label>Email responsable de datos</label><input type="text" id="f-email" placeholder="privacidad@empresa.cl"></div>
+        <div class="form-field"><label>Email de contacto *</label><input type="email" id="f-email" placeholder="contacto@empresa.cl"></div>
       </div>
-
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:10px">Tipo de documento</div>
       <div class="doc-types">
         <button class="doc-type active" onclick="selectDoc('politica',this)">🔒 Política de Privacidad</button>
@@ -183,29 +205,74 @@
         <button class="doc-type" onclick="selectDoc('consentimiento',this)">✅ Cláusula de Consentimiento</button>
         <button class="doc-type" onclick="selectDoc('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
       </div>
-
       <div class="consent-box">
         <input type="checkbox" id="consent-checkbox">
-        <label for="consent-checkbox">
-          He leído y acepto la <a href="/legal-pages/privacidad.html" target="_blank">Política de Privacidad</a> de CumplyCheck. Consiento el tratamiento de los datos ingresados con el único fin de generar el documento solicitado, conforme a la Ley N° 21.719.
-        </label>
+        <label for="consent-checkbox">He leído y acepto la <a href="/legal-pages/privacidad.html" target="_blank">Política de Privacidad</a> de CumplyCheck. Consiento el tratamiento de los datos ingresados para generar el documento solicitado, conforme a la Ley N° 21.719.</label>
       </div>
-
       <div class="error" id="doc-error"></div>
-      <button class="btn-primary" id="btn-generar" onclick="generateDoc()" style="width:100%;padding:12px">Generar documento con IA</button>
+      <button class="btn-primary" id="btn-generar" onclick="generateDoc()" style="width:100%;padding:12px">Vista previa gratuita →</button>
     </div>
 
     <div class="loading" id="doc-loading"><div style="font-size:32px;margin-bottom:12px">⚖️</div><div>Redactando documento…</div></div>
 
-    <div class="doc-result" id="doc-result">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento generado</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn-secondary" id="btn-copiar" onclick="copiarDoc()">Copiar texto</button>
-          <button class="btn-secondary" onclick="descargarDoc()">📥 Descargar</button>
+    <!-- Preview bloqueado -->
+    <div id="doc-preview" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento listo</div>
+          <div style="font-size:11px;color:#6b7aaa">🔒 Bloqueado — paga para descargar</div>
+        </div>
+        <pre class="doc-text" id="doc-text"></pre>
+      </div>
+
+      <div class="lock-overlay">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-title">Desbloquea tu documento</div>
+        <div class="lock-desc">El documento está listo. Elige tu plan para descargarlo completo.</div>
+
+        <div class="pricing-cards">
+          <div class="pricing-card" id="card-individual" onclick="selectPlan('individual')">
+            <div class="pricing-label">Documento individual</div>
+            <div class="pricing-price">$2.000</div>
+            <div class="pricing-desc">Solo este documento</div>
+          </div>
+          <div class="pricing-card featured selected" id="card-pack" onclick="selectPlan('pack')">
+            <div class="pricing-label highlight">⭐ Pack completo</div>
+            <div class="pricing-price">$5.000</div>
+            <div class="pricing-desc">Los 4 documentos</div>
+            <div class="pricing-savings">Ahorras $3.000</div>
+          </div>
+        </div>
+
+        <div class="error" id="pago-error" style="margin-bottom:12px"></div>
+        <button class="btn-green" id="btn-pagar" onclick="iniciarPago()">
+          Pagar con Mercado Pago →
+        </button>
+        <div style="font-size:11px;color:#4a5280;margin-top:10px">Pago seguro · Webpay, débito, crédito, transferencia</div>
+      </div>
+    </div>
+
+    <!-- Documento desbloqueado -->
+    <div id="doc-result" style="display:none">
+      <div class="card" style="border-color:#22c55e33">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:#22c55e">✅ Documento desbloqueado</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-secondary" id="btn-copiar" onclick="copiarDoc()">Copiar texto</button>
+            <button class="btn-secondary" onclick="descargarDoc()">📥 Descargar PDF</button>
+          </div>
+        </div>
+        <pre class="doc-text unlocked" id="doc-text-unlocked"></pre>
+      </div>
+      <div id="pack-info" style="display:none;background:#131520;border:1px solid #7c3aed33;border-radius:12px;padding:20px;margin-top:12px">
+        <div style="font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:12px">⭐ Pack completo — genera tus otros documentos</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+          <button class="doc-type" onclick="selectDocAndGenerate('politica',this)">🔒 Política de Privacidad</button>
+          <button class="doc-type" onclick="selectDocAndGenerate('cookies',this)">🍪 Aviso de Cookies</button>
+          <button class="doc-type" onclick="selectDocAndGenerate('consentimiento',this)">✅ Cláusula de Consentimiento</button>
+          <button class="doc-type" onclick="selectDocAndGenerate('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
         </div>
       </div>
-      <pre class="doc-text" id="doc-text"></pre>
     </div>
   </div>
 
@@ -222,45 +289,23 @@
 <!-- Cookie banner -->
 <div id="cookie-banner">
   <div class="cookie-inner">
-    <div class="cookie-text">
-      Usamos cookies propias y de terceros para el funcionamiento del sitio, análisis de uso y mejora de la experiencia. Puedes aceptar todas, rechazar las no necesarias o personalizar tus preferencias. Más información en nuestra <a href="/legal-pages/cookies.html" target="_blank">Política de Cookies</a>.
-    </div>
+    <div class="cookie-text">Usamos cookies para el funcionamiento del sitio y análisis de uso. <a href="/legal-pages/cookies.html" target="_blank">Política de Cookies</a>.</div>
     <div class="cookie-actions">
       <button class="cookie-btn cookie-btn-reject" onclick="cookieDecision('reject')">Rechazar</button>
-      <button class="cookie-btn-prefs" onclick="openCookieModal()" style="padding:9px 4px">Personalizar</button>
-      <button class="cookie-btn cookie-btn-accept" onclick="cookieDecision('accept')">Aceptar todas</button>
+      <button class="cookie-btn-prefs" onclick="openCookieModal()" style="color:#6b9bff">Personalizar</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="cookieDecision('accept')">Aceptar</button>
     </div>
   </div>
 </div>
-
-<!-- Cookie preferences modal -->
-<div id="cookie-modal">
+<div id="cookie-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1001;align-items:center;justify-content:center;padding:20px">
   <div class="cookie-modal-card">
-    <h3>Preferencias de Cookies</h3>
-    <div class="cookie-pref-row">
-      <div>
-        <div class="cookie-pref-title">Estrictamente necesarias</div>
-        <div class="cookie-pref-desc">Indispensables para el funcionamiento del sitio. No se pueden desactivar.</div>
-      </div>
-      <div class="toggle-switch"><input type="checkbox" checked disabled><span class="toggle-slider"></span></div>
-    </div>
-    <div class="cookie-pref-row">
-      <div>
-        <div class="cookie-pref-title">Preferencias</div>
-        <div class="cookie-pref-desc">Recuerdan idioma y configuraciones de interfaz.</div>
-      </div>
-      <div class="toggle-switch"><input type="checkbox" id="pref-preferencias"><span class="toggle-slider"></span></div>
-    </div>
-    <div class="cookie-pref-row">
-      <div>
-        <div class="cookie-pref-title">Analíticas</div>
-        <div class="cookie-pref-desc">Nos ayudan a entender cómo se usa el sitio (Google Analytics).</div>
-      </div>
-      <div class="toggle-switch"><input type="checkbox" id="pref-analiticas"><span class="toggle-slider"></span></div>
-    </div>
+    <h3 style="font-size:18px;margin-bottom:16px">Preferencias de Cookies</h3>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Estrictamente necesarias</div><div class="cookie-pref-desc">Indispensables para el funcionamiento.</div></div><div class="toggle-switch"><input type="checkbox" checked disabled><span class="toggle-slider"></span></div></div>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Preferencias</div><div class="cookie-pref-desc">Recuerdan idioma y configuraciones.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-preferencias"><span class="toggle-slider"></span></div></div>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Analíticas</div><div class="cookie-pref-desc">Google Analytics — análisis de uso.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-analiticas"><span class="toggle-slider"></span></div></div>
     <div class="cookie-modal-actions">
       <button class="cookie-btn cookie-btn-reject" onclick="closeCookieModal()" style="flex:1">Cancelar</button>
-      <button class="cookie-btn cookie-btn-accept" onclick="saveCookiePrefs()" style="flex:1">Guardar preferencias</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="saveCookiePrefs()" style="flex:1">Guardar</button>
     </div>
   </div>
 </div>
@@ -279,52 +324,56 @@ const DOC_LABELS = {
   contrato_encargado:"Contrato de Encargado de Datos Personales"
 };
 let currentAudit=null,currentDoc="",currentDocType="politica",backendOk=false;
+let planSeleccionado="pack", pagoRealizado=false, esPack=false;
+
 const sc=s=>s==="ok"?"#22c55e":s==="warn"?"#f59e0b":s==="fail"?"#ef4444":"#374151";
 const sl=s=>s==="ok"?"Cumple":s==="warn"?"Revisar":s==="fail"?"Falta":"—";
 const se=s=>s==="ok"?"✅":s==="warn"?"⚠️":"❌";
 
-// ----- COOKIE CONSENT -----
-function getCookiePrefs(){
-  try { return JSON.parse(localStorage.getItem("cumplycheck_cookie_prefs")); } catch(e){ return null; }
-}
-function setCookiePrefs(prefs){
-  localStorage.setItem("cumplycheck_cookie_prefs", JSON.stringify(prefs));
-  localStorage.setItem("cumplycheck_cookie_consent_date", new Date().toISOString());
-}
-function initCookieBanner(){
-  const existing = getCookiePrefs();
-  if(!existing){
-    document.getElementById("cookie-banner").style.display = "block";
+// Cookie consent
+function getCookiePrefs(){ try{return JSON.parse(localStorage.getItem("cumplycheck_cookie_prefs"));}catch(e){return null;} }
+function setCookiePrefs(p){ localStorage.setItem("cumplycheck_cookie_prefs",JSON.stringify(p)); localStorage.setItem("cumplycheck_cookie_consent_date",new Date().toISOString()); }
+function initCookieBanner(){ if(!getCookiePrefs()) document.getElementById("cookie-banner").style.display="block"; }
+function cookieDecision(t){ setCookiePrefs(t==="accept"?{necesarias:true,preferencias:true,analiticas:true}:{necesarias:true,preferencias:false,analiticas:false}); document.getElementById("cookie-banner").style.display="none"; }
+function openCookieModal(){ const p=getCookiePrefs()||{}; document.getElementById("pref-preferencias").checked=!!p.preferencias; document.getElementById("pref-analiticas").checked=!!p.analiticas; document.getElementById("cookie-modal").style.display="flex"; }
+function closeCookieModal(){ document.getElementById("cookie-modal").style.display="none"; }
+function saveCookiePrefs(){ setCookiePrefs({necesarias:true,preferencias:document.getElementById("pref-preferencias").checked,analiticas:document.getElementById("pref-analiticas").checked}); document.getElementById("cookie-banner").style.display="none"; closeCookieModal(); }
+
+// Verificar pago en URL params
+function checkPaymentReturn(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get("pago") === "ok"){
+    const tipo = params.get("tipo");
+    const doc = params.get("doc");
+    const nombre = params.get("nombre");
+    const rut = params.get("rut");
+    const rubro = params.get("rubro");
+    const email = params.get("email");
+    pagoRealizado = true;
+    esPack = tipo === "pack";
+    document.getElementById("success-banner").style.display = "block";
+    document.getElementById("success-msg").textContent = esPack ? "Pack completo desbloqueado — genera tus 4 documentos." : "Documento desbloqueado — generando ahora…";
+    // Rellenar formulario con datos del pago
+    if(nombre) document.getElementById("f-nombre").value = decodeURIComponent(nombre);
+    if(rut) document.getElementById("f-rut").value = decodeURIComponent(rut);
+    if(rubro) document.getElementById("f-rubro").value = decodeURIComponent(rubro);
+    if(email) document.getElementById("f-email").value = decodeURIComponent(email);
+    if(doc) {
+      currentDocType = doc;
+      document.querySelectorAll(".doc-type").forEach(b => b.classList.remove("active"));
+    }
+    document.getElementById("consent-checkbox").checked = true;
+    switchTab("docs");
+    // Auto-generar el documento
+    setTimeout(() => generateDoc(true), 500);
+    // Limpiar URL
+    window.history.replaceState({}, "", "/");
+  } else if(params.get("pago") === "error"){
+    alert("El pago no se completó. Por favor intenta de nuevo.");
+    window.history.replaceState({}, "", "/");
   }
-}
-function cookieDecision(type){
-  if(type === "accept"){
-    setCookiePrefs({ necesarias: true, preferencias: true, analiticas: true });
-  } else {
-    setCookiePrefs({ necesarias: true, preferencias: false, analiticas: false });
-  }
-  document.getElementById("cookie-banner").style.display = "none";
-}
-function openCookieModal(){
-  const prefs = getCookiePrefs() || { preferencias: false, analiticas: false };
-  document.getElementById("pref-preferencias").checked = !!prefs.preferencias;
-  document.getElementById("pref-analiticas").checked = !!prefs.analiticas;
-  document.getElementById("cookie-modal").style.display = "flex";
-}
-function closeCookieModal(){
-  document.getElementById("cookie-modal").style.display = "none";
-}
-function saveCookiePrefs(){
-  setCookiePrefs({
-    necesarias: true,
-    preferencias: document.getElementById("pref-preferencias").checked,
-    analiticas: document.getElementById("pref-analiticas").checked
-  });
-  document.getElementById("cookie-banner").style.display = "none";
-  closeCookieModal();
 }
 
-// ----- BACKEND -----
 async function checkBackend(){
   try{
     const r=await fetch(BACKEND+"/health");
@@ -350,7 +399,43 @@ function switchTab(t){
 function selectDoc(type,el){
   currentDocType=type;
   document.querySelectorAll(".doc-type").forEach(b=>b.classList.remove("active"));
-  el.classList.add("active");
+  if(el) el.classList.add("active");
+}
+
+function selectPlan(plan){
+  planSeleccionado = plan;
+  document.getElementById("card-individual").classList.toggle("selected", plan==="individual");
+  document.getElementById("card-pack").classList.toggle("selected", plan==="pack");
+}
+
+async function iniciarPago(){
+  const nombre=document.getElementById("f-nombre").value.trim();
+  const rut=document.getElementById("f-rut").value.trim();
+  const rubro=document.getElementById("f-rubro").value.trim();
+  const email=document.getElementById("f-email").value.trim();
+  const errEl=document.getElementById("pago-error");
+  errEl.style.display="none";
+
+  if(!email){ errEl.textContent="Ingresa tu email para recibir confirmación."; errEl.style.display="block"; return; }
+
+  document.getElementById("btn-pagar").disabled = true;
+  document.getElementById("btn-pagar").textContent = "Generando enlace de pago…";
+
+  try{
+    const r = await fetch(BACKEND+"/crear-pago",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ tipo: planSeleccionado, docType: currentDocType, nombre, rut, rubro, email })
+    });
+    const d = await r.json();
+    if(!d.ok) throw new Error(d.error||"Error creando pago");
+    window.location.href = d.init_point;
+  }catch(e){
+    errEl.textContent = "Error: "+e.message;
+    errEl.style.display = "block";
+    document.getElementById("btn-pagar").disabled = false;
+    document.getElementById("btn-pagar").textContent = "Pagar con Mercado Pago →";
+  }
 }
 
 async function runAudit(){
@@ -373,7 +458,23 @@ async function runAudit(){
     document.getElementById("audit-step").textContent="Analizando con IA…";
     let ctx="Sitio a auditar: "+url+"\n\n";
     if(htmlReal&&senales){
-      ctx+="SEÑALES REALES del HTML (incluyendo páginas de privacidad/cookies enlazadas, ya leídas):\n- Link a página de privacidad: "+senales.tiene_link_privacidad+"\n- Contenido de política de privacidad verificado: "+senales.tiene_texto_privacidad+"\n- Banner de cookies visible en pantalla: "+senales.tiene_banner_cookies+"\n- Página/aviso de cookies dedicada: "+senales.tiene_aviso_cookies+"\n- Panel de preferencias granular de cookies: "+senales.tiene_panel_preferencias_cookies+"\n- Checkbox de consentimiento en formularios: "+senales.tiene_checkbox_consentimiento+"\n- Formularios activos que piden datos: "+senales.num_formularios+" ("+senales.num_inputs_email+" campos email)\n- Email de contacto de privacidad: "+senales.tiene_email_contacto+"\n- Identificación de responsable/contacto: "+senales.tiene_contacto_datos+"\n- Finalidad del tratamiento explicada: "+senales.tiene_finalidad+"\n- Derechos ARCO explicados: "+senales.tiene_arco+"\n- Plazo de conservación explicado: "+senales.tiene_plazo+"\n- Transferencia a terceros/encargados explicada: "+senales.tiene_terceros+"\n- HTTPS: "+senales.tiene_https+"\n- Título: "+senales.titulo+"\n\nIMPORTANTE: si una página de privacidad o cookies fue encontrada y su contenido fue leído (las señales reflejan eso), considera ese punto como CUMPLIDO (ok) si la señal es true, sin pedir verificación adicional. Solo marca warn si la señal es false pero hay indicios parciales, y fail si no hay nada. Evalúa basándote en estas señales REALES, sin ser excesivamente conservador cuando el contenido ya fue verificado.";
+      ctx+="SEÑALES REALES verificadas (incluyendo páginas legales enlazadas ya leídas):\n"+
+        "- Link a política de privacidad: "+senales.tiene_link_privacidad+"\n"+
+        "- Contenido de política verificado: "+senales.tiene_texto_privacidad+"\n"+
+        "- Banner cookies visible: "+senales.tiene_banner_cookies+"\n"+
+        "- Página de cookies dedicada: "+senales.tiene_aviso_cookies+"\n"+
+        "- Panel preferencias granular: "+senales.tiene_panel_preferencias_cookies+"\n"+
+        "- Checkbox consentimiento: "+senales.tiene_checkbox_consentimiento+"\n"+
+        "- Formularios activos: "+senales.num_formularios+"\n"+
+        "- Email contacto privacidad: "+senales.tiene_email_contacto+"\n"+
+        "- Responsable datos identificado: "+senales.tiene_contacto_datos+"\n"+
+        "- Finalidad explicada: "+senales.tiene_finalidad+"\n"+
+        "- Derechos ARCO: "+senales.tiene_arco+"\n"+
+        "- Plazo conservación: "+senales.tiene_plazo+"\n"+
+        "- Transferencia terceros: "+senales.tiene_terceros+"\n"+
+        "- HTTPS: "+senales.tiene_https+"\n"+
+        "- Título: "+senales.titulo+"\n\n"+
+        "IMPORTANTE: si la señal es true, el contenido fue leído y verificado. Marca ese punto como ok directamente sin pedir revisión adicional. Reserva warn solo si la señal es false con indicios parciales. Fail si no hay nada.";
     }else{ctx+="No se pudo acceder al HTML. Evalúa de forma estimada.";}
     const prompt="Eres auditor experto en Ley 21.719 Chile (vigencia 1 dic 2026).\n\n"+ctx+"\n\nResponde SOLO JSON sin markdown:\n"+
       '{"url":"'+url+'","es_analisis_real":'+htmlReal+',"resumen":"2 oraciones","checks":['+
@@ -416,31 +517,51 @@ function renderAudit(data){
   document.getElementById("audit-result").style.display="block";
 }
 
-async function generateDoc(){
+async function generateDoc(unlocked=false){
   const nombre=document.getElementById("f-nombre").value.trim();
   const rubro=document.getElementById("f-rubro").value.trim();
   const rut=document.getElementById("f-rut").value.trim();
   const email=document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
   const errEl=document.getElementById("doc-error");
 
-  if(!document.getElementById("consent-checkbox").checked){
-    errEl.textContent="Debes aceptar el tratamiento de datos para continuar.";
-    errEl.style.display="block";
-    return;
+  const shouldUnlock = unlocked || pagoRealizado;
+
+  if(!shouldUnlock && !document.getElementById("consent-checkbox").checked){
+    errEl.textContent="Debes aceptar el tratamiento de datos para continuar.";errEl.style.display="block";return;
   }
   if(!nombre||!rubro){errEl.textContent="Ingresa el nombre y rubro.";errEl.style.display="block";return;}
   errEl.style.display="none";
   document.getElementById("btn-generar").disabled=true;
   document.getElementById("doc-loading").style.display="block";
+  document.getElementById("doc-preview").style.display="none";
   document.getElementById("doc-result").style.display="none";
+
   try{
     const prompt="Eres abogado especialista en Ley 21.719 de Protección de Datos Personales de Chile.\n\nGenera: "+DOC_LABELS[currentDocType]+"\nEmpresa: "+nombre+"\nRUT: "+(rut||"No indicado")+"\nRubro: "+rubro+"\nEmail: "+email+"\n\nCumplir Ley 21.719 (vigente 1 dic 2026), español chileno formal, secciones numeradas, listo para usar, completo sin cortar.";
     currentDoc=await callClaude(prompt);
-    document.getElementById("doc-text").textContent=currentDoc;
-    document.getElementById("doc-result").style.display="block";
+
+    if(shouldUnlock){
+      // Documento desbloqueado
+      document.getElementById("doc-text-unlocked").textContent=currentDoc;
+      document.getElementById("doc-result").style.display="block";
+      if(esPack) document.getElementById("pack-info").style.display="block";
+    } else {
+      // Preview bloqueado
+      document.getElementById("doc-text").textContent=currentDoc;
+      document.getElementById("doc-preview").style.display="block";
+    }
   }catch(e){errEl.textContent="Error: "+e.message;errEl.style.display="block";}
   document.getElementById("doc-loading").style.display="none";
   document.getElementById("btn-generar").disabled=false;
+}
+
+async function selectDocAndGenerate(type, el){
+  selectDoc(type, el);
+  document.querySelectorAll("#pack-info .doc-type").forEach(b=>b.classList.remove("active"));
+  if(el) el.classList.add("active");
+  document.getElementById("doc-loading").style.display="block";
+  document.getElementById("doc-result").style.display="none";
+  await generateDoc(true);
 }
 
 function copiarDoc(){
@@ -457,7 +578,7 @@ function descargarReporte(){
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const filas=currentAudit.checks.map(c=>"<tr style='border-bottom:1px solid #e5e7eb'><td style='padding:9px 8px;font-size:13px;font-weight:600'>"+(CHECKS_META[c.id]||c.id)+"</td><td style='padding:9px 8px;text-align:center'>"+se(c.status)+" "+sl(c.status)+"</td><td style='padding:9px 8px;font-size:12px;color:#4b5563'>"+c.detalle+"</td></tr>").join("");
   const acciones=(currentAudit.acciones_prioritarias||[]).map((a,i)=>"<li style='margin-bottom:8px;font-size:13px'>"+a+"</li>").join("");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte CumplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Reporte</div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>CumplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af;margin-top:2px'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte CumplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>CumplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-reporte.html";a.click();
 }
 
@@ -467,12 +588,13 @@ function descargarDoc(){
   const rut=document.getElementById("f-rut").value.trim();
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const contenido=currentDoc.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-documento.html";a.click();
 }
 
 checkBackend();
 initCookieBanner();
+checkPaymentReturn();
 </script>
 </body>
 </html>
