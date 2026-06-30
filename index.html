@@ -52,7 +52,42 @@
   .empty-card { background: #131520; border: 1px solid #1e2130; border-radius: 10px; padding: 14px; }
   .doc-result { background: #131520; border: 1px solid #22c55e33; border-radius: 12px; padding: 24px; display: none; }
   .doc-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; }
-  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; justify-content: space-between; font-size: 12px; color: #2e3450; }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 12px; color: #2e3450; }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: #6b7aaa; text-decoration: none; }
+  .footer-links a:hover { color: #a0aec0; text-decoration: underline; }
+  .consent-box { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; padding: 14px; background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; }
+  .consent-box input[type=checkbox] { margin-top: 2px; width: 16px; height: 16px; accent-color: #3b6bff; cursor: pointer; flex-shrink: 0; }
+  .consent-box label { font-size: 12px; color: #8b9bc0; line-height: 1.5; cursor: pointer; }
+  .consent-box a { color: #6b9bff; text-decoration: underline; }
+
+  /* Cookie banner */
+  #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #131520; border-top: 1px solid #1e2130; padding: 20px 24px; z-index: 1000; box-shadow: 0 -8px 30px rgba(0,0,0,0.4); display: none; }
+  .cookie-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .cookie-text { flex: 1; font-size: 13px; color: #b8c0d8; line-height: 1.5; min-width: 240px; }
+  .cookie-text a { color: #6b9bff; text-decoration: underline; }
+  .cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .cookie-btn { padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .cookie-btn-accept { background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; }
+  .cookie-btn-reject { background: transparent; border: 1px solid #1e2130; color: #a0aec0; }
+  .cookie-btn-prefs { background: transparent; color: #6b9bff; text-decoration: underline; border: none; cursor: pointer; font-size: 12px; }
+
+  /* Cookie preferences modal */
+  #cookie-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1001; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .cookie-modal-card { background: #131520; border: 1px solid #1e2130; border-radius: 14px; max-width: 480px; width: 100%; padding: 28px; max-height: 80vh; overflow-y: auto; }
+  .cookie-modal-card h3 { font-size: 18px; margin-bottom: 16px; }
+  .cookie-pref-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #1e2130; gap: 12px; }
+  .cookie-pref-row:last-of-type { border-bottom: none; }
+  .cookie-pref-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .cookie-pref-desc { font-size: 12px; color: #6b7aaa; }
+  .toggle-switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #1e2130; border-radius: 22px; transition: 0.2s; }
+  .toggle-slider:before { content: ""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #6b7aaa; border-radius: 50%; transition: 0.2s; }
+  .toggle-switch input:checked + .toggle-slider { background: #3b6bff; }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: #fff; }
+  .toggle-switch input:disabled + .toggle-slider { opacity: 0.5; cursor: not-allowed; }
+  .cookie-modal-actions { display: flex; gap: 8px; margin-top: 20px; }
 </style>
 </head>
 <body>
@@ -67,19 +102,23 @@
     </div>
   </div>
 </header>
+
 <main>
   <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">
     ⚠️ <strong>Servidor no disponible.</strong> Intenta más tarde.
   </div>
+
   <div class="hero">
     <div class="hero-eyebrow">Nueva Ley de Protección de Datos</div>
     <h1>¿Tu empresa está lista<br><span>para diciembre?</span></h1>
     <p>Detecta falencias en tu sitio web y genera los documentos legales para cumplir con la Ley 21.719.</p>
   </div>
+
   <div class="tabs">
     <button class="tab active" onclick="switchTab('audit')">🔍 Auditar sitio web</button>
     <button class="tab" onclick="switchTab('docs')">📄 Generar documentos</button>
   </div>
+
   <div class="panel active" id="panel-audit">
     <div class="card">
       <label style="font-size:13px;color:#6b7aaa;display:block;margin-bottom:8px">Ingresa la URL de tu sitio web</label>
@@ -89,7 +128,9 @@
       </div>
       <div class="error" id="audit-error"></div>
     </div>
+
     <div class="loading" id="audit-loading"><div style="font-size:32px;margin-bottom:12px">🔍</div><div id="audit-step">Iniciando…</div></div>
+
     <div id="audit-result" style="display:none">
       <div class="card score-card">
         <div style="text-align:center;min-width:80px">
@@ -112,6 +153,7 @@
         <button class="btn-purple" onclick="switchTab('docs')">Generar documentos →</button>
       </div>
     </div>
+
     <div class="empty-grid" id="audit-empty">
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Política de Privacidad</div><div style="font-size:11px;color:#4a5280">Documento sobre tratamiento de datos</div></div>
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Banner de Cookies</div><div style="font-size:11px;color:#4a5280">Consentimiento explícito de cookies</div></div>
@@ -123,6 +165,7 @@
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Transferencia a Terceros</div><div style="font-size:11px;color:#4a5280">Si se comparten datos con proveedores</div></div>
     </div>
   </div>
+
   <div class="panel" id="panel-docs">
     <div class="card">
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:16px">Datos de tu empresa</div>
@@ -132,6 +175,7 @@
         <div class="form-field"><label>Rubro / actividad *</label><input type="text" id="f-rubro" placeholder="Software, clínica, comercio, etc."></div>
         <div class="form-field"><label>Email responsable de datos</label><input type="text" id="f-email" placeholder="privacidad@empresa.cl"></div>
       </div>
+
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:10px">Tipo de documento</div>
       <div class="doc-types">
         <button class="doc-type active" onclick="selectDoc('politica',this)">🔒 Política de Privacidad</button>
@@ -139,10 +183,20 @@
         <button class="doc-type" onclick="selectDoc('consentimiento',this)">✅ Cláusula de Consentimiento</button>
         <button class="doc-type" onclick="selectDoc('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
       </div>
+
+      <div class="consent-box">
+        <input type="checkbox" id="consent-checkbox">
+        <label for="consent-checkbox">
+          He leído y acepto la <a href="/legal-pages/privacidad.html" target="_blank">Política de Privacidad</a> de CumplyCheck. Consiento el tratamiento de los datos ingresados con el único fin de generar el documento solicitado, conforme a la Ley N° 21.719.
+        </label>
+      </div>
+
       <div class="error" id="doc-error"></div>
       <button class="btn-primary" id="btn-generar" onclick="generateDoc()" style="width:100%;padding:12px">Generar documento con IA</button>
     </div>
+
     <div class="loading" id="doc-loading"><div style="font-size:32px;margin-bottom:12px">⚖️</div><div>Redactando documento…</div></div>
+
     <div class="doc-result" id="doc-result">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento generado</div>
@@ -154,11 +208,63 @@
       <pre class="doc-text" id="doc-text"></pre>
     </div>
   </div>
+
   <footer>
-    <span>CumplyCheck</span>
-    <span>Documentos orientativos. Consulte a un abogado.</span>
+    <span>CumplyCheck — Ley 21.719 (vigencia 1 dic 2026)</span>
+    <div class="footer-links">
+      <a href="/legal-pages/privacidad.html">Política de Privacidad</a>
+      <a href="/legal-pages/cookies.html">Cookies</a>
+      <button class="cookie-btn-prefs" onclick="openCookieModal()">Gestionar mis preferencias de cookies</button>
+    </div>
   </footer>
 </main>
+
+<!-- Cookie banner -->
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <div class="cookie-text">
+      Usamos cookies propias y de terceros para el funcionamiento del sitio, análisis de uso y mejora de la experiencia. Puedes aceptar todas, rechazar las no necesarias o personalizar tus preferencias. Más información en nuestra <a href="/legal-pages/cookies.html" target="_blank">Política de Cookies</a>.
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn cookie-btn-reject" onclick="cookieDecision('reject')">Rechazar</button>
+      <button class="cookie-btn-prefs" onclick="openCookieModal()" style="padding:9px 4px">Personalizar</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="cookieDecision('accept')">Aceptar todas</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie preferences modal -->
+<div id="cookie-modal">
+  <div class="cookie-modal-card">
+    <h3>Preferencias de Cookies</h3>
+    <div class="cookie-pref-row">
+      <div>
+        <div class="cookie-pref-title">Estrictamente necesarias</div>
+        <div class="cookie-pref-desc">Indispensables para el funcionamiento del sitio. No se pueden desactivar.</div>
+      </div>
+      <div class="toggle-switch"><input type="checkbox" checked disabled><span class="toggle-slider"></span></div>
+    </div>
+    <div class="cookie-pref-row">
+      <div>
+        <div class="cookie-pref-title">Preferencias</div>
+        <div class="cookie-pref-desc">Recuerdan idioma y configuraciones de interfaz.</div>
+      </div>
+      <div class="toggle-switch"><input type="checkbox" id="pref-preferencias"><span class="toggle-slider"></span></div>
+    </div>
+    <div class="cookie-pref-row">
+      <div>
+        <div class="cookie-pref-title">Analíticas</div>
+        <div class="cookie-pref-desc">Nos ayudan a entender cómo se usa el sitio (Google Analytics).</div>
+      </div>
+      <div class="toggle-switch"><input type="checkbox" id="pref-analiticas"><span class="toggle-slider"></span></div>
+    </div>
+    <div class="cookie-modal-actions">
+      <button class="cookie-btn cookie-btn-reject" onclick="closeCookieModal()" style="flex:1">Cancelar</button>
+      <button class="cookie-btn cookie-btn-accept" onclick="saveCookiePrefs()" style="flex:1">Guardar preferencias</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const BACKEND = "https://complycheck-server-production.up.railway.app";
 const CHECKS_META = {
@@ -177,6 +283,48 @@ const sc=s=>s==="ok"?"#22c55e":s==="warn"?"#f59e0b":s==="fail"?"#ef4444":"#37415
 const sl=s=>s==="ok"?"Cumple":s==="warn"?"Revisar":s==="fail"?"Falta":"—";
 const se=s=>s==="ok"?"✅":s==="warn"?"⚠️":"❌";
 
+// ----- COOKIE CONSENT -----
+function getCookiePrefs(){
+  try { return JSON.parse(localStorage.getItem("cumplycheck_cookie_prefs")); } catch(e){ return null; }
+}
+function setCookiePrefs(prefs){
+  localStorage.setItem("cumplycheck_cookie_prefs", JSON.stringify(prefs));
+  localStorage.setItem("cumplycheck_cookie_consent_date", new Date().toISOString());
+}
+function initCookieBanner(){
+  const existing = getCookiePrefs();
+  if(!existing){
+    document.getElementById("cookie-banner").style.display = "block";
+  }
+}
+function cookieDecision(type){
+  if(type === "accept"){
+    setCookiePrefs({ necesarias: true, preferencias: true, analiticas: true });
+  } else {
+    setCookiePrefs({ necesarias: true, preferencias: false, analiticas: false });
+  }
+  document.getElementById("cookie-banner").style.display = "none";
+}
+function openCookieModal(){
+  const prefs = getCookiePrefs() || { preferencias: false, analiticas: false };
+  document.getElementById("pref-preferencias").checked = !!prefs.preferencias;
+  document.getElementById("pref-analiticas").checked = !!prefs.analiticas;
+  document.getElementById("cookie-modal").style.display = "flex";
+}
+function closeCookieModal(){
+  document.getElementById("cookie-modal").style.display = "none";
+}
+function saveCookiePrefs(){
+  setCookiePrefs({
+    necesarias: true,
+    preferencias: document.getElementById("pref-preferencias").checked,
+    analiticas: document.getElementById("pref-analiticas").checked
+  });
+  document.getElementById("cookie-banner").style.display = "none";
+  closeCookieModal();
+}
+
+// ----- BACKEND -----
 async function checkBackend(){
   try{
     const r=await fetch(BACKEND+"/health");
@@ -274,6 +422,12 @@ async function generateDoc(){
   const rut=document.getElementById("f-rut").value.trim();
   const email=document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
   const errEl=document.getElementById("doc-error");
+
+  if(!document.getElementById("consent-checkbox").checked){
+    errEl.textContent="Debes aceptar el tratamiento de datos para continuar.";
+    errEl.style.display="block";
+    return;
+  }
   if(!nombre||!rubro){errEl.textContent="Ingresa el nombre y rubro.";errEl.style.display="block";return;}
   errEl.style.display="none";
   document.getElementById("btn-generar").disabled=true;
@@ -318,6 +472,7 @@ function descargarDoc(){
 }
 
 checkBackend();
+initCookieBanner();
 </script>
 </body>
 </html>
