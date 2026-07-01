@@ -26,7 +26,8 @@
   .panel { display: none; }
   .panel.active { display: block; }
   .card { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
-  input[type=text], input[type=url], input[type=email] { background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; padding: 10px 14px; color: #e8eaf0; font-size: 14px; outline: none; width: 100%; }
+  input[type=text], input[type=url], input[type=email] { background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; padding: 10px 14px; color: #e8eaf0; font-size: 14px; outline: none; width: 100%; transition: all 0.2s; }
+  input:disabled { opacity: 0.5; cursor: not-allowed; }
   .input-row { display: flex; gap: 10px; }
   .input-row input { flex: 1; }
   .btn-primary { padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
@@ -34,13 +35,14 @@
   .btn-secondary { padding: 6px 14px; border-radius: 6px; border: 1px solid #1e2130; background: #1e2130; color: #a0aec0; font-size: 12px; font-weight: 600; cursor: pointer; }
   .btn-purple { padding: 8px 18px; border-radius: 7px; border: none; background: #7c3aed; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 12px; }
   .btn-green { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; font-weight: 700; font-size: 15px; width: 100%; }
+  .btn-green:disabled { opacity: 0.6; cursor: wait; }
   .error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
-  .loading { text-align: center; padding: 48px; color: #4a5280; display: none; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .form-field label { font-size: 12px; color: #6b7aaa; display: block; margin-bottom: 4px; }
   .doc-types { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
-  .doc-type { padding: 10px 14px; border-radius: 8px; border: 1px solid #1e2130; background: transparent; color: #6b7aaa; cursor: pointer; text-align: left; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .doc-type { padding: 10px 14px; border-radius: 8px; border: 1px solid #1e2130; background: transparent; color: #6b7aaa; cursor: pointer; text-align: left; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.15s; }
   .doc-type.active { border-color: #3b6bff; background: #1e2eff15; color: #6b9bff; }
+  .doc-type:disabled { opacity: 0.5; cursor: not-allowed; }
   .score-card { display: flex; align-items: center; gap: 24px; }
   .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
   .badge-real { color: #22c55e; background: #22c55e11; }
@@ -51,47 +53,66 @@
   .acciones { background: #1a1020; border: 1px solid #7c3aed33; border-radius: 12px; padding: 20px; display: none; }
   .empty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .empty-card { background: #131520; border: 1px solid #1e2130; border-radius: 10px; padding: 14px; }
-  .doc-result { background: #131520; border: 1px solid #22c55e33; border-radius: 12px; padding: 24px; display: none; }
-  .doc-text { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; filter: blur(4px); user-select: none; pointer-events: none; }
-  .doc-text.unlocked { filter: none; user-select: text; pointer-events: auto; }
+  .doc-text-blurred { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 300px; overflow: hidden; font-family: inherit; filter: blur(4px); user-select: none; pointer-events: none; position: relative; }
+  .doc-text-unlocked { white-space: pre-wrap; font-size: 12px; line-height: 1.7; color: #c0c8e0; max-height: 420px; overflow-y: auto; font-family: inherit; }
   .consent-box { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; padding: 14px; background: #0d0f14; border: 1px solid #1e2130; border-radius: 8px; }
   .consent-box input[type=checkbox] { margin-top: 2px; width: 16px; height: 16px; accent-color: #3b6bff; cursor: pointer; flex-shrink: 0; }
   .consent-box label { font-size: 12px; color: #8b9bc0; line-height: 1.5; cursor: pointer; }
   .consent-box a { color: #6b9bff; text-decoration: underline; }
-
-  /* Pricing cards */
+  .locked-badge { background: #1a1020; border: 1px solid #f59e0b33; border-radius: 6px; padding: 8px 14px; font-size: 12px; color: #fbbf24; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 6px; }
   .pricing-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-  .pricing-card { background: #0d0f14; border: 1px solid #1e2130; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
+  .pricing-card { background: #0d0f14; border: 2px solid #1e2130; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.15s; }
   .pricing-card:hover { border-color: #3b6bff44; }
   .pricing-card.selected { border-color: #3b6bff; background: #1e2eff08; }
-  .pricing-card.featured { border-color: #7c3aed; background: #7c3aed08; }
-  .pricing-card.featured.selected { border-color: #7c3aed; background: #7c3aed15; }
+  .pricing-card.featured { border-color: #7c3aed44; }
+  .pricing-card.featured.selected { border-color: #7c3aed; background: #7c3aed12; }
   .pricing-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7aaa; margin-bottom: 8px; }
   .pricing-label.highlight { color: #a78bfa; }
-  .pricing-price { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+  .pricing-price { font-size: 32px; font-weight: 900; margin-bottom: 4px; }
   .pricing-desc { font-size: 12px; color: #6b7aaa; }
-  .pricing-savings { font-size: 11px; color: #22c55e; font-weight: 600; margin-top: 4px; }
+  .pricing-savings { font-size: 11px; color: #22c55e; font-weight: 600; margin-top: 6px; }
   .lock-overlay { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 32px 24px; text-align: center; margin-bottom: 16px; }
   .lock-icon { font-size: 40px; margin-bottom: 12px; }
   .lock-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .lock-desc { font-size: 14px; color: #6b7aaa; margin-bottom: 24px; }
-  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 12px; color: #2e3450; }
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a { color: #6b7aaa; text-decoration: none; }
-  .footer-links a:hover { color: #a0aec0; }
-  .cookie-btn-prefs { background: transparent; color: #6b7aaa; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; }
 
-  /* Pago exitoso */
+  /* Progress bar */
+  .progress-box { background: #131520; border: 1px solid #1e2130; border-radius: 12px; padding: 28px 24px; text-align: center; display: none; }
+  .progress-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .progress-subtitle { font-size: 13px; color: #6b7aaa; margin-bottom: 20px; }
+  .progress-bar-wrap { background: #0d0f14; border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 20px; }
+  .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3b6bff, #7c3aed); width: 0%; transition: width 0.5s ease; }
+  .progress-steps { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .ps-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4a5280; }
+  .ps-item.done { color: #22c55e; }
+  .ps-item.active { color: #6b9bff; }
+  .ps-dot { width: 8px; height: 8px; border-radius: 50%; background: #1e2130; flex-shrink: 0; }
+  .ps-item.done .ps-dot { background: #22c55e; }
+  .ps-item.active .ps-dot { background: #3b6bff; }
+
+  /* Pack result */
+  .pack-docs { display: grid; gap: 12px; }
+  .pack-doc-card { background: #131520; border: 1px solid #1e2130; border-radius: 10px; padding: 16px; }
+  .pack-doc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .pack-doc-title { font-size: 13px; font-weight: 600; }
+  .pack-doc-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .pack-doc-text { white-space: pre-wrap; font-size: 11px; line-height: 1.6; color: #c0c8e0; max-height: 180px; overflow-y: auto; font-family: inherit; margin-top: 8px; display: none; }
+
   .success-banner { background: #052e16; border: 1px solid #16a34a44; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: none; }
   .success-banner h3 { color: #22c55e; font-size: 16px; margin-bottom: 6px; }
   .success-banner p { font-size: 13px; color: #86efac; }
+  .empresa-locked-info { background: #131520; border: 1px solid #3b6bff33; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #6b9bff; margin-bottom: 16px; display: none; }
 
-  /* Cookie banner */
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e2130; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; font-size: 12px; color: #2e3450; }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: #6b7aaa; text-decoration: none; }
+  .cookie-btn-prefs { background: transparent; color: #6b7aaa; border: none; cursor: pointer; font-size: 12px; text-decoration: underline; }
+
   #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #131520; border-top: 1px solid #1e2130; padding: 20px 24px; z-index: 1000; display: none; }
   .cookie-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-  .cookie-text { flex: 1; font-size: 13px; color: #b8c0d8; line-height: 1.5; min-width: 240px; }
+  .cookie-text { flex: 1; font-size: 13px; color: #b8c0d8; min-width: 240px; }
   .cookie-text a { color: #6b9bff; text-decoration: underline; }
-  .cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .cookie-actions { display: flex; gap: 8px; }
   .cookie-btn { padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
   .cookie-btn-accept { background: linear-gradient(135deg, #3b6bff, #7c3aed); color: #fff; }
   .cookie-btn-reject { background: transparent; border: 1px solid #1e2130; color: #a0aec0; }
@@ -125,12 +146,9 @@
 <main>
   <div id="success-banner" class="success-banner">
     <h3>✅ ¡Pago exitoso!</h3>
-    <p id="success-msg">Tu documento se está generando…</p>
+    <p id="success-msg">Generando tus documentos…</p>
   </div>
-
-  <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">
-    ⚠️ <strong>Servidor no disponible.</strong> Intenta más tarde.
-  </div>
+  <div id="warn-banner" style="display:none;background:#1a1500;border:1px solid #f59e0b44;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24">⚠️ <strong>Servidor no disponible.</strong> Intenta más tarde.</div>
 
   <div class="hero">
     <div class="hero-eyebrow">Nueva Ley de Protección de Datos</div>
@@ -143,7 +161,7 @@
     <button class="tab" onclick="switchTab('docs')">📄 Generar documentos</button>
   </div>
 
-  <!-- AUDIT -->
+  <!-- AUDIT PANEL -->
   <div class="panel active" id="panel-audit">
     <div class="card">
       <label style="font-size:13px;color:#6b7aaa;display:block;margin-bottom:8px">Ingresa la URL de tu sitio web</label>
@@ -153,7 +171,19 @@
       </div>
       <div class="error" id="audit-error"></div>
     </div>
-    <div class="loading" id="audit-loading"><div style="font-size:32px;margin-bottom:12px">🔍</div><div id="audit-step">Iniciando…</div></div>
+
+    <div class="progress-box" id="audit-loading">
+      <div class="progress-title">Analizando tu sitio web</div>
+      <div class="progress-subtitle" id="audit-step">Iniciando…</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="audit-bar"></div></div>
+      <div class="progress-steps">
+        <div class="ps-item" id="ps1"><div class="ps-dot"></div>Descargando HTML</div>
+        <div class="ps-item" id="ps2"><div class="ps-dot"></div>Leyendo páginas legales</div>
+        <div class="ps-item" id="ps3"><div class="ps-dot"></div>Analizando con IA</div>
+        <div class="ps-item" id="ps4"><div class="ps-dot"></div>Generando reporte</div>
+      </div>
+    </div>
+
     <div id="audit-result" style="display:none">
       <div class="card score-card">
         <div style="text-align:center;min-width:80px">
@@ -176,6 +206,7 @@
         <button class="btn-purple" onclick="switchTab('docs')">Generar documentos →</button>
       </div>
     </div>
+
     <div class="empty-grid" id="audit-empty">
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Política de Privacidad</div><div style="font-size:11px;color:#4a5280">Documento sobre tratamiento de datos</div></div>
       <div class="empty-card"><div style="width:6px;height:6px;border-radius:50%;background:#2e3450;margin-bottom:8px"></div><div style="font-size:12px;font-weight:600;margin-bottom:4px">Banner de Cookies</div><div style="font-size:11px;color:#4a5280">Consentimiento explícito de cookies</div></div>
@@ -188,9 +219,12 @@
     </div>
   </div>
 
-  <!-- DOCS -->
+  <!-- DOCS PANEL -->
   <div class="panel" id="panel-docs">
-    <div class="card">
+    <div class="card" id="form-card">
+      <div id="empresa-locked-info" class="empresa-locked-info">
+        🔒 Datos de empresa bloqueados — pago realizado para <strong id="empresa-locked-nombre"></strong>
+      </div>
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:16px">Datos de tu empresa</div>
       <div class="form-grid">
         <div class="form-field"><label>Nombre empresa *</label><input type="text" id="f-nombre" placeholder="Empresa SpA"></div>
@@ -199,37 +233,47 @@
         <div class="form-field"><label>Email de contacto *</label><input type="email" id="f-email" placeholder="contacto@empresa.cl"></div>
       </div>
       <div style="font-size:13px;font-weight:600;color:#6b7aaa;margin-bottom:10px">Tipo de documento</div>
-      <div class="doc-types">
-        <button class="doc-type active" onclick="selectDoc('politica',this)">🔒 Política de Privacidad</button>
-        <button class="doc-type" onclick="selectDoc('cookies',this)">🍪 Aviso de Cookies</button>
-        <button class="doc-type" onclick="selectDoc('consentimiento',this)">✅ Cláusula de Consentimiento</button>
-        <button class="doc-type" onclick="selectDoc('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
+      <div class="doc-types" id="doc-types-grid">
+        <button class="doc-type active" id="dt-politica" onclick="selectDoc('politica',this)">🔒 Política de Privacidad</button>
+        <button class="doc-type" id="dt-cookies" onclick="selectDoc('cookies',this)">🍪 Aviso de Cookies</button>
+        <button class="doc-type" id="dt-consentimiento" onclick="selectDoc('consentimiento',this)">✅ Cláusula de Consentimiento</button>
+        <button class="doc-type" id="dt-contrato_encargado" onclick="selectDoc('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
       </div>
-      <div class="consent-box">
+      <div class="consent-box" id="consent-box">
         <input type="checkbox" id="consent-checkbox">
         <label for="consent-checkbox">He leído y acepto la <a href="/legal-pages/privacidad.html" target="_blank">Política de Privacidad</a> de CumplyCheck. Consiento el tratamiento de los datos ingresados para generar el documento solicitado, conforme a la Ley N° 21.719.</label>
       </div>
       <div class="error" id="doc-error"></div>
-      <button class="btn-primary" id="btn-generar" onclick="generateDoc()" style="width:100%;padding:12px">Vista previa gratuita →</button>
+      <button class="btn-primary" id="btn-generar" onclick="clickGenerar()" style="width:100%;padding:12px">Vista previa gratuita →</button>
     </div>
 
-    <div class="loading" id="doc-loading"><div style="font-size:32px;margin-bottom:12px">⚖️</div><div>Redactando documento…</div></div>
+    <!-- Progress bar generación -->
+    <div class="progress-box" id="doc-loading">
+      <div class="progress-title" id="doc-loading-title">Redactando documento legal</div>
+      <div class="progress-subtitle" id="doc-loading-step">Preparando…</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="doc-bar"></div></div>
+      <div class="progress-steps">
+        <div class="ps-item" id="dp1"><div class="ps-dot"></div>Procesando datos</div>
+        <div class="ps-item" id="dp2"><div class="ps-dot"></div>Redactando secciones</div>
+        <div class="ps-item" id="dp3"><div class="ps-dot"></div>Verificando cumplimiento</div>
+        <div class="ps-item" id="dp4"><div class="ps-dot"></div>Finalizando</div>
+      </div>
+    </div>
 
     <!-- Preview bloqueado -->
     <div id="doc-preview" style="display:none">
       <div class="card" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento listo</div>
-          <div style="font-size:11px;color:#6b7aaa">🔒 Bloqueado — paga para descargar</div>
+          <div style="font-size:13px;font-weight:700;color:#22c55e">✓ Documento generado — preview</div>
+          <span class="locked-badge" style="margin-bottom:0">🔒 Paga para descargar</span>
         </div>
-        <pre class="doc-text" id="doc-text"></pre>
+        <pre class="doc-text-blurred" id="doc-text-preview"></pre>
+        <div style="text-align:center;font-size:12px;color:#6b7aaa;margin-top:8px;padding-top:8px;border-top:1px solid #1e2130">Desbloquea para ver el documento completo</div>
       </div>
-
       <div class="lock-overlay">
         <div class="lock-icon">🔒</div>
         <div class="lock-title">Desbloquea tu documento</div>
         <div class="lock-desc">El documento está listo. Elige tu plan para descargarlo completo.</div>
-
         <div class="pricing-cards">
           <div class="pricing-card" id="card-individual" onclick="selectPlan('individual')">
             <div class="pricing-label">Documento individual</div>
@@ -239,40 +283,34 @@
           <div class="pricing-card featured selected" id="card-pack" onclick="selectPlan('pack')">
             <div class="pricing-label highlight">⭐ Pack completo</div>
             <div class="pricing-price">$5.000</div>
-            <div class="pricing-desc">Los 4 documentos</div>
+            <div class="pricing-desc">Los 4 documentos en paralelo</div>
             <div class="pricing-savings">Ahorras $3.000</div>
           </div>
         </div>
-
         <div class="error" id="pago-error" style="margin-bottom:12px"></div>
-        <button class="btn-green" id="btn-pagar" onclick="iniciarPago()">
-          Pagar con Mercado Pago →
-        </button>
-        <div style="font-size:11px;color:#4a5280;margin-top:10px">Pago seguro · Webpay, débito, crédito, transferencia</div>
+        <button class="btn-green" id="btn-pagar" onclick="iniciarPago()">Pagar con Mercado Pago →</button>
+        <div style="font-size:11px;color:#4a5280;margin-top:10px">Webpay, débito, crédito, transferencia</div>
       </div>
     </div>
 
-    <!-- Documento desbloqueado -->
+    <!-- Documento individual desbloqueado -->
     <div id="doc-result" style="display:none">
       <div class="card" style="border-color:#22c55e33">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
           <div style="font-size:13px;font-weight:700;color:#22c55e">✅ Documento desbloqueado</div>
           <div style="display:flex;gap:8px">
-            <button class="btn-secondary" id="btn-copiar" onclick="copiarDoc()">Copiar texto</button>
-            <button class="btn-secondary" onclick="descargarDoc()">📥 Descargar PDF</button>
+            <button class="btn-secondary" id="btn-copiar" onclick="copiarDoc()">Copiar</button>
+            <button class="btn-secondary" onclick="descargarDoc()">📥 Descargar</button>
           </div>
         </div>
-        <pre class="doc-text unlocked" id="doc-text-unlocked"></pre>
+        <pre class="doc-text-unlocked" id="doc-text-unlocked"></pre>
       </div>
-      <div id="pack-info" style="display:none;background:#131520;border:1px solid #7c3aed33;border-radius:12px;padding:20px;margin-top:12px">
-        <div style="font-size:13px;font-weight:700;color:#a78bfa;margin-bottom:12px">⭐ Pack completo — genera tus otros documentos</div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
-          <button class="doc-type" onclick="selectDocAndGenerate('politica',this)">🔒 Política de Privacidad</button>
-          <button class="doc-type" onclick="selectDocAndGenerate('cookies',this)">🍪 Aviso de Cookies</button>
-          <button class="doc-type" onclick="selectDocAndGenerate('consentimiento',this)">✅ Cláusula de Consentimiento</button>
-          <button class="doc-type" onclick="selectDocAndGenerate('contrato_encargado',this)">📄 Contrato Encargado de Datos</button>
-        </div>
-      </div>
+    </div>
+
+    <!-- Pack 4 documentos -->
+    <div id="pack-result" style="display:none">
+      <div style="font-size:15px;font-weight:700;color:#22c55e;margin-bottom:16px">✅ Pack completo — 4 documentos</div>
+      <div class="pack-docs" id="pack-docs-container"></div>
     </div>
   </div>
 
@@ -281,28 +319,27 @@
     <div class="footer-links">
       <a href="/legal-pages/privacidad.html">Política de Privacidad</a>
       <a href="/legal-pages/cookies.html">Cookies</a>
-      <button class="cookie-btn-prefs" onclick="openCookieModal()">Gestionar mis preferencias de cookies</button>
+      <button class="cookie-btn-prefs" onclick="openCookieModal()">Gestionar cookies</button>
     </div>
   </footer>
 </main>
 
-<!-- Cookie banner -->
 <div id="cookie-banner">
   <div class="cookie-inner">
-    <div class="cookie-text">Usamos cookies para el funcionamiento del sitio y análisis de uso. <a href="/legal-pages/cookies.html" target="_blank">Política de Cookies</a>.</div>
+    <div class="cookie-text">Usamos cookies para el funcionamiento del sitio. <a href="/legal-pages/cookies.html" target="_blank">Política de Cookies</a>.</div>
     <div class="cookie-actions">
       <button class="cookie-btn cookie-btn-reject" onclick="cookieDecision('reject')">Rechazar</button>
-      <button class="cookie-btn-prefs" onclick="openCookieModal()" style="color:#6b9bff">Personalizar</button>
+      <button class="cookie-btn-prefs" onclick="openCookieModal()" style="color:#6b9bff;padding:9px 4px">Personalizar</button>
       <button class="cookie-btn cookie-btn-accept" onclick="cookieDecision('accept')">Aceptar</button>
     </div>
   </div>
 </div>
-<div id="cookie-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1001;align-items:center;justify-content:center;padding:20px">
+<div id="cookie-modal">
   <div class="cookie-modal-card">
     <h3 style="font-size:18px;margin-bottom:16px">Preferencias de Cookies</h3>
-    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Estrictamente necesarias</div><div class="cookie-pref-desc">Indispensables para el funcionamiento.</div></div><div class="toggle-switch"><input type="checkbox" checked disabled><span class="toggle-slider"></span></div></div>
-    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Preferencias</div><div class="cookie-pref-desc">Recuerdan idioma y configuraciones.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-preferencias"><span class="toggle-slider"></span></div></div>
-    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Analíticas</div><div class="cookie-pref-desc">Google Analytics — análisis de uso.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-analiticas"><span class="toggle-slider"></span></div></div>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Necesarias</div><div class="cookie-pref-desc">Indispensables para el funcionamiento.</div></div><div class="toggle-switch"><input type="checkbox" checked disabled><span class="toggle-slider"></span></div></div>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Preferencias</div><div class="cookie-pref-desc">Idioma y configuraciones.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-preferencias"><span class="toggle-slider"></span></div></div>
+    <div class="cookie-pref-row"><div><div class="cookie-pref-title">Analíticas</div><div class="cookie-pref-desc">Google Analytics.</div></div><div class="toggle-switch"><input type="checkbox" id="pref-analiticas"><span class="toggle-slider"></span></div></div>
     <div class="cookie-modal-actions">
       <button class="cookie-btn cookie-btn-reject" onclick="closeCookieModal()" style="flex:1">Cancelar</button>
       <button class="cookie-btn cookie-btn-accept" onclick="saveCookiePrefs()" style="flex:1">Guardar</button>
@@ -312,6 +349,8 @@
 
 <script>
 const BACKEND = "https://complycheck-server-production.up.railway.app";
+const ANIO = new Date().getFullYear();
+
 const CHECKS_META = {
   politica_privacidad:"Política de Privacidad",cookies:"Banner de Cookies",
   consentimiento_formularios:"Consentimiento en Formularios",contacto_responsable:"Contacto Responsable",
@@ -319,61 +358,115 @@ const CHECKS_META = {
   plazo_conservacion:"Plazo de Conservación",transferencia_terceros:"Transferencia a Terceros"
 };
 const DOC_LABELS = {
-  politica:"Política de Privacidad completa",cookies:"Aviso y política de Cookies",
+  politica:"Política de Privacidad completa",
+  cookies:"Aviso y Política de Cookies",
   consentimiento:"Cláusula de Consentimiento para formularios web",
   contrato_encargado:"Contrato de Encargado de Datos Personales"
 };
-let currentAudit=null,currentDoc="",currentDocType="politica",backendOk=false;
+const DOC_ICONS = { politica:"🔒",cookies:"🍪",consentimiento:"✅",contrato_encargado:"📄" };
+const ALL_DOC_TYPES = ["politica","cookies","consentimiento","contrato_encargado"];
+
+let currentAudit=null, currentDoc="", currentDocType="politica", backendOk=false;
 let planSeleccionado="pack", pagoRealizado=false, esPack=false;
+let packDocs={};
+// Datos fijados al momento del pago — no editables después
+let datosPago = null;
 
 const sc=s=>s==="ok"?"#22c55e":s==="warn"?"#f59e0b":s==="fail"?"#ef4444":"#374151";
 const sl=s=>s==="ok"?"Cumple":s==="warn"?"Revisar":s==="fail"?"Falta":"—";
 const se=s=>s==="ok"?"✅":s==="warn"?"⚠️":"❌";
 
-// Cookie consent
-function getCookiePrefs(){ try{return JSON.parse(localStorage.getItem("cumplycheck_cookie_prefs"));}catch(e){return null;} }
-function setCookiePrefs(p){ localStorage.setItem("cumplycheck_cookie_prefs",JSON.stringify(p)); localStorage.setItem("cumplycheck_cookie_consent_date",new Date().toISOString()); }
-function initCookieBanner(){ if(!getCookiePrefs()) document.getElementById("cookie-banner").style.display="block"; }
-function cookieDecision(t){ setCookiePrefs(t==="accept"?{necesarias:true,preferencias:true,analiticas:true}:{necesarias:true,preferencias:false,analiticas:false}); document.getElementById("cookie-banner").style.display="none"; }
-function openCookieModal(){ const p=getCookiePrefs()||{}; document.getElementById("pref-preferencias").checked=!!p.preferencias; document.getElementById("pref-analiticas").checked=!!p.analiticas; document.getElementById("cookie-modal").style.display="flex"; }
-function closeCookieModal(){ document.getElementById("cookie-modal").style.display="none"; }
-function saveCookiePrefs(){ setCookiePrefs({necesarias:true,preferencias:document.getElementById("pref-preferencias").checked,analiticas:document.getElementById("pref-analiticas").checked}); document.getElementById("cookie-banner").style.display="none"; closeCookieModal(); }
+// ---- COOKIES ----
+function getCookiePrefs(){try{return JSON.parse(localStorage.getItem("cc_prefs"));}catch(e){return null;}}
+function setCookiePrefs(p){localStorage.setItem("cc_prefs",JSON.stringify(p));}
+function initCookieBanner(){if(!getCookiePrefs())document.getElementById("cookie-banner").style.display="block";}
+function cookieDecision(t){setCookiePrefs(t==="accept"?{n:true,p:true,a:true}:{n:true,p:false,a:false});document.getElementById("cookie-banner").style.display="none";}
+function openCookieModal(){const p=getCookiePrefs()||{};document.getElementById("pref-preferencias").checked=!!p.p;document.getElementById("pref-analiticas").checked=!!p.a;document.getElementById("cookie-modal").style.display="flex";}
+function closeCookieModal(){document.getElementById("cookie-modal").style.display="none";}
+function saveCookiePrefs(){setCookiePrefs({n:true,p:document.getElementById("pref-preferencias").checked,a:document.getElementById("pref-analiticas").checked});document.getElementById("cookie-banner").style.display="none";closeCookieModal();}
 
-// Verificar pago en URL params
-function checkPaymentReturn(){
-  const params = new URLSearchParams(window.location.search);
-  if(params.get("pago") === "ok"){
-    const tipo = params.get("tipo");
-    const doc = params.get("doc");
-    const nombre = params.get("nombre");
-    const rut = params.get("rut");
-    const rubro = params.get("rubro");
-    const email = params.get("email");
-    pagoRealizado = true;
-    esPack = tipo === "pack";
-    document.getElementById("success-banner").style.display = "block";
-    document.getElementById("success-msg").textContent = esPack ? "Pack completo desbloqueado — genera tus 4 documentos." : "Documento desbloqueado — generando ahora…";
-    // Rellenar formulario con datos del pago
-    if(nombre) document.getElementById("f-nombre").value = decodeURIComponent(nombre);
-    if(rut) document.getElementById("f-rut").value = decodeURIComponent(rut);
-    if(rubro) document.getElementById("f-rubro").value = decodeURIComponent(rubro);
-    if(email) document.getElementById("f-email").value = decodeURIComponent(email);
-    if(doc) {
-      currentDocType = doc;
-      document.querySelectorAll(".doc-type").forEach(b => b.classList.remove("active"));
-    }
-    document.getElementById("consent-checkbox").checked = true;
-    switchTab("docs");
-    // Auto-generar el documento
-    setTimeout(() => generateDoc(true), 500);
-    // Limpiar URL
-    window.history.replaceState({}, "", "/");
-  } else if(params.get("pago") === "error"){
-    alert("El pago no se completó. Por favor intenta de nuevo.");
-    window.history.replaceState({}, "", "/");
+// ---- PROGRESS ----
+function setAuditProgress(pct, step, label){
+  document.getElementById("audit-bar").style.width=pct+"%";
+  document.getElementById("audit-step").textContent=label;
+  ["ps1","ps2","ps3","ps4"].forEach((id,i)=>{
+    const n=parseInt(step); const el=document.getElementById(id);
+    el.className="ps-item"+(i+1<n?" done":i+1===n?" active":"");
+  });
+}
+function setDocProgress(pct, step, label){
+  document.getElementById("doc-bar").style.width=pct+"%";
+  document.getElementById("doc-loading-step").textContent=label;
+  ["dp1","dp2","dp3","dp4"].forEach((id,i)=>{
+    const n=parseInt(step); const el=document.getElementById(id);
+    el.className="ps-item"+(i+1<n?" done":i+1===n?" active":"");
+  });
+}
+
+// ---- BLOQUEO DE FORMULARIO ----
+function bloquearFormulario(nombre){
+  ["f-nombre","f-rut","f-rubro","f-email"].forEach(id=>{
+    document.getElementById(id).disabled=true;
+  });
+  document.getElementById("consent-box").style.display="none";
+  document.getElementById("empresa-locked-info").style.display="block";
+  document.getElementById("empresa-locked-nombre").textContent=nombre;
+  // Bloquear selección de tipo doc si es pack
+  if(esPack){
+    document.querySelectorAll(".doc-type").forEach(b=>{b.style.pointerEvents="none";b.style.opacity="0.5";});
   }
 }
 
+// ---- PAGO RETURN ----
+function checkPaymentReturn(){
+  const params=new URLSearchParams(window.location.search);
+  if(params.get("pago")==="ok"){
+    const tipo=params.get("tipo");
+    const doc=params.get("doc")||"politica";
+    const nombre=decodeURIComponent(params.get("nombre")||"");
+    const rut=decodeURIComponent(params.get("rut")||"");
+    const rubro=decodeURIComponent(params.get("rubro")||"");
+    const email=decodeURIComponent(params.get("email")||"");
+
+    pagoRealizado=true;
+    esPack=tipo==="pack";
+    currentDocType=doc;
+
+    // Guardar datos del pago — no modificables
+    datosPago={nombre,rut,rubro,email};
+
+    document.getElementById("success-banner").style.display="block";
+    document.getElementById("success-msg").textContent=esPack?"Generando tus 4 documentos en paralelo…":"Generando tu documento…";
+
+    // Rellenar formulario con datos del pago
+    document.getElementById("f-nombre").value=nombre;
+    document.getElementById("f-rut").value=rut;
+    document.getElementById("f-rubro").value=rubro;
+    document.getElementById("f-email").value=email;
+    document.getElementById("consent-checkbox").checked=true;
+
+    // Seleccionar doc tipo correcto
+    document.querySelectorAll(".doc-type").forEach(b=>b.classList.remove("active"));
+    const dtBtn=document.getElementById("dt-"+doc);
+    if(dtBtn) dtBtn.classList.add("active");
+
+    // Cambiar botón
+    document.getElementById("btn-generar").textContent=esPack?"Generar pack completo (4 documentos)":"Descargar documento";
+    document.getElementById("btn-generar").style.background="linear-gradient(135deg, #16a34a, #15803d)";
+
+    // Bloquear formulario
+    bloquearFormulario(nombre);
+
+    switchTab("docs");
+    setTimeout(()=>esPack?generatePack():generateDoc(true),600);
+    window.history.replaceState({},"","/");
+  }else if(params.get("pago")==="error"){
+    alert("El pago no se completó. Por favor intenta de nuevo.");
+    window.history.replaceState({},"","/");
+  }
+}
+
+// ---- BACKEND ----
 async function checkBackend(){
   try{
     const r=await fetch(BACKEND+"/health");
@@ -397,47 +490,54 @@ function switchTab(t){
 }
 
 function selectDoc(type,el){
+  if(pagoRealizado&&esPack)return; // pack no permite cambiar tipo
+  if(pagoRealizado&&!esPack)return; // individual tampoco
   currentDocType=type;
   document.querySelectorAll(".doc-type").forEach(b=>b.classList.remove("active"));
-  if(el) el.classList.add("active");
+  if(el)el.classList.add("active");
 }
 
 function selectPlan(plan){
-  planSeleccionado = plan;
-  document.getElementById("card-individual").classList.toggle("selected", plan==="individual");
-  document.getElementById("card-pack").classList.toggle("selected", plan==="pack");
+  planSeleccionado=plan;
+  document.getElementById("card-individual").classList.toggle("selected",plan==="individual");
+  document.getElementById("card-pack").classList.toggle("selected",plan==="pack");
+}
+
+// ---- CLICK GENERAR (controla el texto del botón) ----
+function clickGenerar(){
+  if(pagoRealizado){
+    // No debería llegar acá — el botón debería estar bloqueado o redirigir
+    return;
+  }
+  generateDoc(false);
 }
 
 async function iniciarPago(){
+  // Usar datos actuales del formulario para el pago
   const nombre=document.getElementById("f-nombre").value.trim();
   const rut=document.getElementById("f-rut").value.trim();
   const rubro=document.getElementById("f-rubro").value.trim();
   const email=document.getElementById("f-email").value.trim();
   const errEl=document.getElementById("pago-error");
   errEl.style.display="none";
+  if(!email){errEl.textContent="Ingresa tu email para recibir confirmación.";errEl.style.display="block";return;}
+  if(!nombre||!rubro){errEl.textContent="Completa el nombre y rubro antes de pagar.";errEl.style.display="block";return;}
 
-  if(!email){ errEl.textContent="Ingresa tu email para recibir confirmación."; errEl.style.display="block"; return; }
-
-  document.getElementById("btn-pagar").disabled = true;
-  document.getElementById("btn-pagar").textContent = "Generando enlace de pago…";
-
+  document.getElementById("btn-pagar").disabled=true;
+  document.getElementById("btn-pagar").textContent="Generando enlace de pago…";
   try{
-    const r = await fetch(BACKEND+"/crear-pago",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ tipo: planSeleccionado, docType: currentDocType, nombre, rut, rubro, email })
-    });
-    const d = await r.json();
-    if(!d.ok) throw new Error(d.error||"Error creando pago");
-    window.location.href = d.init_point;
+    const r=await fetch(BACKEND+"/crear-pago",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({tipo:planSeleccionado,docType:currentDocType,nombre,rut,rubro,email})});
+    const d=await r.json();
+    if(!d.ok)throw new Error(d.error||"Error");
+    window.location.href=d.init_point;
   }catch(e){
-    errEl.textContent = "Error: "+e.message;
-    errEl.style.display = "block";
-    document.getElementById("btn-pagar").disabled = false;
-    document.getElementById("btn-pagar").textContent = "Pagar con Mercado Pago →";
+    errEl.textContent="Error: "+e.message;errEl.style.display="block";
+    document.getElementById("btn-pagar").disabled=false;
+    document.getElementById("btn-pagar").textContent="Pagar con Mercado Pago →";
   }
 }
 
+// ---- AUDIT ----
 async function runAudit(){
   const url=document.getElementById("url-input").value.trim();
   if(!url)return;
@@ -449,48 +549,58 @@ async function runAudit(){
   document.getElementById("audit-empty").style.display="none";
   try{
     let senales=null,htmlReal=false;
-    document.getElementById("audit-step").textContent="Descargando HTML del sitio…";
+    setAuditProgress(15,1,"Descargando HTML del sitio…");
     try{
       const sr=await fetch(BACKEND+"/scan",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
       const sd=await sr.json();
       if(sd.ok){senales=sd.senales;htmlReal=true;}
     }catch(e){}
-    document.getElementById("audit-step").textContent="Analizando con IA…";
+    setAuditProgress(40,2,"Leyendo páginas legales enlazadas…");
+    await new Promise(r=>setTimeout(r,400));
+    setAuditProgress(65,3,"Analizando con IA…");
     let ctx="Sitio a auditar: "+url+"\n\n";
     if(htmlReal&&senales){
-      ctx+="SEÑALES REALES verificadas (incluyendo páginas legales enlazadas ya leídas):\n"+
+      ctx+="SEÑALES REALES verificadas (incluye contenido de páginas de privacidad y cookies ya leídas):\n"+
         "- Link a política de privacidad: "+senales.tiene_link_privacidad+"\n"+
-        "- Contenido de política verificado: "+senales.tiene_texto_privacidad+"\n"+
-        "- Banner cookies visible: "+senales.tiene_banner_cookies+"\n"+
-        "- Página de cookies dedicada: "+senales.tiene_aviso_cookies+"\n"+
-        "- Panel preferencias granular: "+senales.tiene_panel_preferencias_cookies+"\n"+
-        "- Checkbox consentimiento: "+senales.tiene_checkbox_consentimiento+"\n"+
-        "- Formularios activos: "+senales.num_formularios+"\n"+
-        "- Email contacto privacidad: "+senales.tiene_email_contacto+"\n"+
-        "- Responsable datos identificado: "+senales.tiene_contacto_datos+"\n"+
-        "- Finalidad explicada: "+senales.tiene_finalidad+"\n"+
-        "- Derechos ARCO: "+senales.tiene_arco+"\n"+
-        "- Plazo conservación: "+senales.tiene_plazo+"\n"+
-        "- Transferencia terceros: "+senales.tiene_terceros+"\n"+
-        "- HTTPS: "+senales.tiene_https+"\n"+
-        "- Título: "+senales.titulo+"\n\n"+
-        "IMPORTANTE: si la señal es true, el contenido fue leído y verificado. Marca ese punto como ok directamente sin pedir revisión adicional. Reserva warn solo si la señal es false con indicios parciales. Fail si no hay nada.";
-    }else{ctx+="No se pudo acceder al HTML. Evalúa de forma estimada.";}
-    const prompt="Eres auditor experto en Ley 21.719 Chile (vigencia 1 dic 2026).\n\n"+ctx+"\n\nResponde SOLO JSON sin markdown:\n"+
-      '{"url":"'+url+'","es_analisis_real":'+htmlReal+',"resumen":"2 oraciones","checks":['+
-      '{"id":"politica_privacidad","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"cookies","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"consentimiento_formularios","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"contacto_responsable","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"finalidad_datos","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"derechos_arco","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"plazo_conservacion","status":"ok o warn o fail","detalle":"max 12 palabras"},'+
-      '{"id":"transferencia_terceros","status":"ok o warn o fail","detalle":"max 12 palabras"}'+
-      '],"acciones_prioritarias":["a1","a2","a3"]}';
+        "- Contenido de política de privacidad verificado: "+senales.tiene_texto_privacidad+"\n"+
+        "- Banner de cookies visible en página principal: "+senales.tiene_banner_cookies+"\n"+
+        "- Página o aviso de cookies dedicado: "+senales.tiene_aviso_cookies+"\n"+
+        "- Panel de preferencias granular de cookies: "+senales.tiene_panel_preferencias_cookies+"\n"+
+        "- Checkbox de consentimiento en formularios: "+senales.tiene_checkbox_consentimiento+"\n"+
+        "- Formularios que recopilan datos: "+senales.num_formularios+" ("+senales.num_inputs_email+" campos email)\n"+
+        "- Email de contacto de privacidad: "+senales.tiene_email_contacto+"\n"+
+        "- Responsable de datos identificado: "+senales.tiene_contacto_datos+"\n"+
+        "- Finalidad del tratamiento explicada: "+senales.tiene_finalidad+"\n"+
+        "- Derechos ARCO explicados: "+senales.tiene_arco+"\n"+
+        "- Plazo de conservación explicado: "+senales.tiene_plazo+"\n"+
+        "- Transferencia a terceros/encargados explicada: "+senales.tiene_terceros+"\n"+
+        "- HTTPS activo: "+senales.tiene_https+"\n"+
+        "- Título del sitio: "+senales.titulo+"\n\n"+
+        "REGLA IMPORTANTE: si una señal es true, significa que el contenido fue leído y verificado automáticamente. Marca ese punto como 'ok' directamente. NO pidas revisión adicional cuando la señal ya confirma el contenido. Reserva 'warn' solo si la señal es false pero hay indicios parciales. Usa 'fail' solo cuando no hay nada.";
+    }else{
+      ctx+="No se pudo acceder al HTML del sitio. Evalúa de forma estimada basándote en el tipo de dominio y rubro.";
+    }
+    const prompt="Eres auditor experto en Ley N° 21.719 sobre Protección de Datos Personales de Chile (vigencia 1 de diciembre de 2026).\n\n"+ctx+"\n\nResponde SOLO con JSON válido sin markdown:\n"+
+      '{"url":"'+url+'","es_analisis_real":'+htmlReal+',"resumen":"2 oraciones concretas sobre el nivel de cumplimiento","checks":['+
+      '{"id":"politica_privacidad","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"cookies","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"consentimiento_formularios","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"contacto_responsable","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"finalidad_datos","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"derechos_arco","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"plazo_conservacion","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"},'+
+      '{"id":"transferencia_terceros","status":"ok|warn|fail","detalle":"descripción concreta max 12 palabras"}'+
+      '],"acciones_prioritarias":["acción concreta 1","acción concreta 2","acción concreta 3"]}';
+    setAuditProgress(85,3,"Procesando análisis…");
     const text=await callClaude(prompt);
+    setAuditProgress(100,4,"¡Reporte listo!");
+    await new Promise(r=>setTimeout(r,300));
     currentAudit=JSON.parse(text.replace(/```json|```/g,"").trim());
     renderAudit(currentAudit);
-  }catch(e){errEl.textContent="Error: "+e.message;errEl.style.display="block";document.getElementById("audit-empty").style.display="grid";}
+  }catch(e){
+    errEl.textContent="Error: "+e.message;errEl.style.display="block";
+    document.getElementById("audit-empty").style.display="grid";
+  }
   document.getElementById("audit-loading").style.display="none";
   document.getElementById("btn-analizar").disabled=false;
 }
@@ -508,7 +618,7 @@ function renderAudit(data){
   document.getElementById("checks-list").innerHTML=data.checks.map(c=>
     '<div class="check-item" style="border:1px solid '+sc(c.status)+'33"><div class="check-dot" style="background:'+sc(c.status)+'"></div><div><div style="display:flex;align-items:center;gap:8px;margin-bottom:2px"><span style="font-weight:600;font-size:13px">'+(CHECKS_META[c.id]||c.id)+'</span><span style="font-size:11px;color:'+sc(c.status)+';font-weight:600">'+sl(c.status)+'</span></div><div style="font-size:12px;color:#6b7aaa">'+c.detalle+'</div></div></div>'
   ).join("");
-  if(data.acciones_prioritarias&&data.acciones_prioritarias.length){
+  if(data.acciones_prioritarias?.length){
     document.getElementById("acciones-list").innerHTML=data.acciones_prioritarias.map((a,i)=>
       '<div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px;color:#c4b5fd"><span style="color:#7c3aed;font-weight:700">'+(i+1)+'.</span><span>'+a+'</span></div>'
     ).join("");
@@ -517,37 +627,70 @@ function renderAudit(data){
   document.getElementById("audit-result").style.display="block";
 }
 
+// ---- GENERACIÓN DE DOCUMENTOS ----
+function buildDocPrompt(docType, nombre, rut, rubro, email){
+  return "Eres abogado especialista en Ley N° 21.719 sobre Protección de Datos Personales de Chile.\n\n"+
+    "Genera el siguiente documento legal completo: "+DOC_LABELS[docType]+"\n\n"+
+    "Datos de la empresa responsable:\n"+
+    "- Nombre o razón social: "+nombre+"\n"+
+    "- RUT: "+(rut||"No indicado")+"\n"+
+    "- Rubro o actividad: "+rubro+"\n"+
+    "- Email responsable de datos: "+email+"\n"+
+    "- Año de emisión: "+ANIO+"\n\n"+
+    "Requisitos del documento:\n"+
+    "1. Debe cumplir íntegramente con la Ley N° 21.719 sobre Protección de Datos Personales de Chile, publicada el 13 de diciembre de 2024 y vigente desde el 1 de diciembre de 2026\n"+
+    "2. Redactado en español chileno formal y profesional\n"+
+    "3. Con secciones numeradas y estructura clara\n"+
+    "4. Personalizado para el rubro indicado de la empresa\n"+
+    "5. Completo y listo para usar — no debe quedar truncado ni incompleto\n"+
+    "6. Las fechas de emisión y actualización deben corresponder al año "+ANIO+", no a años anteriores\n"+
+    "7. Incluir todos los elementos exigidos por la ley: identificación del responsable, finalidades, bases de licitud, derechos ARCO, plazos de conservación, transferencias, medidas de seguridad y contacto\n\n"+
+    "Genera el documento completo ahora:";
+}
+
 async function generateDoc(unlocked=false){
-  const nombre=document.getElementById("f-nombre").value.trim();
-  const rubro=document.getElementById("f-rubro").value.trim();
-  const rut=document.getElementById("f-rut").value.trim();
-  const email=document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
+  // Usar datos del pago si existen (inmutables), o del formulario si no
+  const nombre=(datosPago?.nombre)||document.getElementById("f-nombre").value.trim();
+  const rut=(datosPago?.rut)||document.getElementById("f-rut").value.trim();
+  const rubro=(datosPago?.rubro)||document.getElementById("f-rubro").value.trim();
+  const email=(datosPago?.email)||document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
   const errEl=document.getElementById("doc-error");
+  const shouldUnlock=unlocked||pagoRealizado;
 
-  const shouldUnlock = unlocked || pagoRealizado;
-
-  if(!shouldUnlock && !document.getElementById("consent-checkbox").checked){
+  if(!shouldUnlock&&!document.getElementById("consent-checkbox").checked){
     errEl.textContent="Debes aceptar el tratamiento de datos para continuar.";errEl.style.display="block";return;
   }
-  if(!nombre||!rubro){errEl.textContent="Ingresa el nombre y rubro.";errEl.style.display="block";return;}
+  if(!nombre||!rubro){errEl.textContent="Ingresa el nombre de empresa y rubro.";errEl.style.display="block";return;}
   errEl.style.display="none";
+
   document.getElementById("btn-generar").disabled=true;
   document.getElementById("doc-loading").style.display="block";
+  document.getElementById("doc-loading-title").textContent="Redactando "+DOC_LABELS[currentDocType];
   document.getElementById("doc-preview").style.display="none";
   document.getElementById("doc-result").style.display="none";
+  document.getElementById("pack-result").style.display="none";
 
+  setDocProgress(10,1,"Procesando datos de la empresa…");
   try{
-    const prompt="Eres abogado especialista en Ley 21.719 de Protección de Datos Personales de Chile.\n\nGenera: "+DOC_LABELS[currentDocType]+"\nEmpresa: "+nombre+"\nRUT: "+(rut||"No indicado")+"\nRubro: "+rubro+"\nEmail: "+email+"\n\nCumplir Ley 21.719 (vigente 1 dic 2026), español chileno formal, secciones numeradas, listo para usar, completo sin cortar.";
-    currentDoc=await callClaude(prompt);
+    await new Promise(r=>setTimeout(r,300));
+    setDocProgress(30,2,"Redactando secciones legales…");
+    const prompt=buildDocPrompt(currentDocType,nombre,rut,rubro,email);
+    const docPromise=callClaude(prompt);
+    // Avanzar la barra mientras espera
+    await new Promise(r=>setTimeout(r,2000));
+    setDocProgress(60,2,"Continuando redacción…");
+    await new Promise(r=>setTimeout(r,1500));
+    setDocProgress(80,3,"Verificando cumplimiento Ley 21.719…");
+    currentDoc=await docPromise;
+    setDocProgress(100,4,"¡Documento listo!");
+    await new Promise(r=>setTimeout(r,300));
 
     if(shouldUnlock){
-      // Documento desbloqueado
       document.getElementById("doc-text-unlocked").textContent=currentDoc;
       document.getElementById("doc-result").style.display="block";
-      if(esPack) document.getElementById("pack-info").style.display="block";
-    } else {
-      // Preview bloqueado
-      document.getElementById("doc-text").textContent=currentDoc;
+    }else{
+      // Preview borroso
+      document.getElementById("doc-text-preview").textContent=currentDoc;
       document.getElementById("doc-preview").style.display="block";
     }
   }catch(e){errEl.textContent="Error: "+e.message;errEl.style.display="block";}
@@ -555,20 +698,82 @@ async function generateDoc(unlocked=false){
   document.getElementById("btn-generar").disabled=false;
 }
 
-async function selectDocAndGenerate(type, el){
-  selectDoc(type, el);
-  document.querySelectorAll("#pack-info .doc-type").forEach(b=>b.classList.remove("active"));
-  if(el) el.classList.add("active");
+async function generatePack(){
+  const nombre=(datosPago?.nombre)||document.getElementById("f-nombre").value.trim();
+  const rut=(datosPago?.rut)||document.getElementById("f-rut").value.trim();
+  const rubro=(datosPago?.rubro)||document.getElementById("f-rubro").value.trim();
+  const email=(datosPago?.email)||document.getElementById("f-email").value.trim()||"privacidad@"+nombre.toLowerCase().replace(/\s/g,"")+".cl";
+
   document.getElementById("doc-loading").style.display="block";
+  document.getElementById("doc-loading-title").textContent="Generando Pack Completo — 4 documentos en paralelo";
+  document.getElementById("doc-preview").style.display="none";
   document.getElementById("doc-result").style.display="none";
-  await generateDoc(true);
+  document.getElementById("pack-result").style.display="none";
+  packDocs={};
+
+  // Crear cards de progreso
+  const container=document.getElementById("pack-docs-container");
+  container.innerHTML=ALL_DOC_TYPES.map(type=>
+    '<div class="pack-doc-card" id="packcard-'+type+'">'+
+    '<div class="pack-doc-header">'+
+    '<div class="pack-doc-title">'+DOC_ICONS[type]+' '+DOC_LABELS[type]+'</div>'+
+    '<div id="packstatus-'+type+'" style="font-size:11px;color:#4a5280">⏳ Generando…</div>'+
+    '</div>'+
+    '<pre class="pack-doc-text" id="packtext-'+type+'"></pre>'+
+    '<div class="pack-doc-actions" id="packactions-'+type+'" style="display:none">'+
+    '<button class="btn-secondary" onclick="copiarPackDoc(\''+type+'\')">Copiar</button>'+
+    '<button class="btn-secondary" onclick="descargarPackDoc(\''+type+'\')">📥 Descargar</button>'+
+    '</div>'+
+    '</div>'
+  ).join("");
+
+  setDocProgress(5,1,"Iniciando generación paralela de 4 documentos…");
+
+  // Generar los 4 EN PARALELO con Promise.all
+  const promises=ALL_DOC_TYPES.map(async(type)=>{
+    try{
+      const prompt=buildDocPrompt(type,nombre,rut,rubro,email);
+      const text=await callClaude(prompt);
+      packDocs[type]=text;
+      document.getElementById("packstatus-"+type).textContent="✅ Listo";
+      document.getElementById("packstatus-"+type).style.color="#22c55e";
+      document.getElementById("packtext-"+type).textContent=text;
+      document.getElementById("packtext-"+type).style.display="block";
+      document.getElementById("packactions-"+type).style.display="flex";
+      const done=Object.keys(packDocs).length;
+      const pct=Math.round((done/4)*85)+10;
+      setDocProgress(pct,Math.min(done+1,4),"Generados "+done+" de 4 documentos…");
+    }catch(e){
+      document.getElementById("packstatus-"+type).textContent="❌ Error — reintenta";
+      document.getElementById("packstatus-"+type).style.color="#ef4444";
+    }
+  });
+
+  await Promise.all(promises);
+  setDocProgress(100,4,"¡Pack completo listo!");
+  await new Promise(r=>setTimeout(r,300));
+  document.getElementById("doc-loading").style.display="none";
+  document.getElementById("pack-result").style.display="block";
+  if(packDocs[currentDocType]) currentDoc=packDocs[currentDocType];
 }
 
 function copiarDoc(){
   navigator.clipboard.writeText(currentDoc);
   const b=document.getElementById("btn-copiar");
   b.textContent="¡Copiado!";b.style.color="#22c55e";
-  setTimeout(()=>{b.textContent="Copiar texto";b.style.color="";},2000);
+  setTimeout(()=>{b.textContent="Copiar";b.style.color="";},2000);
+}
+
+function copiarPackDoc(type){
+  if(packDocs[type])navigator.clipboard.writeText(packDocs[type]);
+}
+
+function descargarPackDoc(type){
+  if(!packDocs[type])return;
+  const tmp=currentDoc; const tmpType=currentDocType;
+  currentDoc=packDocs[type]; currentDocType=type;
+  descargarDoc();
+  currentDoc=tmp; currentDocType=tmpType;
 }
 
 function descargarReporte(){
@@ -578,7 +783,7 @@ function descargarReporte(){
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const filas=currentAudit.checks.map(c=>"<tr style='border-bottom:1px solid #e5e7eb'><td style='padding:9px 8px;font-size:13px;font-weight:600'>"+(CHECKS_META[c.id]||c.id)+"</td><td style='padding:9px 8px;text-align:center'>"+se(c.status)+" "+sl(c.status)+"</td><td style='padding:9px 8px;font-size:12px;color:#4b5563'>"+c.detalle+"</td></tr>").join("");
   const acciones=(currentAudit.acciones_prioritarias||[]).map((a,i)=>"<li style='margin-bottom:8px;font-size:13px'>"+a+"</li>").join("");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte CumplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>CumplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>Reporte CumplyCheck</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:9px 8px;text-align:left;font-size:11px;color:#6b7280;text-transform:uppercase}h2{font-size:14px;margin:24px 0 10px;border-bottom:2px solid #e5e7eb;padding-bottom:6px}@media print{button{display:none}}</style></head><body><div style='display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e5e7eb'><div><div style='font-size:22px;font-weight:900;margin-bottom:4px'>CumplyCheck</div><div style='font-size:13px'>Sitio: <strong>"+currentAudit.url+"</strong></div><div style='font-size:12px;color:#9ca3af'>"+fecha+"</div></div><div style='text-align:right'><div style='font-size:56px;font-weight:900;color:"+col+";line-height:1'>"+score+"%</div><div style='font-size:12px;color:#6b7280'>cumplimiento</div></div></div><div style='background:#f9fafb;border-left:4px solid "+col+";padding:12px 16px;margin-bottom:20px'>"+currentAudit.resumen+"</div><h2>Detalle por punto de cumplimiento</h2><table><thead><tr><th>Área</th><th>Estado</th><th>Observación</th></tr></thead><tbody>"+filas+"</tbody></table><h2>Acciones prioritarias</h2><ol style='margin:0;padding-left:18px'>"+acciones+"</ol><div style='margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo — no reemplaza asesoría legal profesional.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-reporte.html";a.click();
 }
 
@@ -588,8 +793,8 @@ function descargarDoc(){
   const rut=document.getElementById("f-rut").value.trim();
   const fecha=new Date().toLocaleDateString("es-CL",{day:"2-digit",month:"long",year:"numeric"});
   const contenido=currentDoc.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
-  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>CumplyCheck · Orientativo.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-documento.html";a.click();
+  const html="<!DOCTYPE html><html><head><meta charset='utf-8'><title>"+DOC_LABELS[currentDocType]+"</title><style>body{font-family:Arial,sans-serif;padding:48px 56px;color:#111;max-width:800px;margin:0 auto;line-height:1.75;font-size:13px}@media print{button{display:none}}</style></head><body><div style='font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:6px'>Documento Legal · Ley 21.719 Chile</div><h1 style='font-size:18px;margin-bottom:4px'>"+DOC_LABELS[currentDocType]+"</h1><div style='font-size:12px;color:#6b7280;padding-bottom:16px;border-bottom:2px solid #e5e7eb;margin-bottom:28px'>Empresa: <strong>"+nombre+"</strong>"+(rut?" · RUT: "+rut:"")+" · "+fecha+"</div><div>"+contenido+"</div><div style='margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af'>Generado por CumplyCheck · Orientativo — no reemplaza asesoría legal profesional.</div><button onclick='window.print()' style='margin-top:16px;padding:8px 18px;background:#1d4ed8;color:#fff;border:none;border-radius:6px;cursor:pointer'>Imprimir / Guardar PDF</button></body></html>";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([html],{type:"text/html"}));a.download="cumplycheck-"+currentDocType+"-"+ANIO+".html";a.click();
 }
 
 checkBackend();
