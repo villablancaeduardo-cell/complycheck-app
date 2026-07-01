@@ -81,7 +81,11 @@
   .progress-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
   .progress-subtitle { font-size: 13px; color: #6b7aaa; margin-bottom: 20px; }
   .progress-bar-wrap { background: #0d0f14; border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 20px; }
-  .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3b6bff, #7c3aed); width: 0%; transition: width 0.5s ease; }
+  .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3b6bff, #7c3aed); width: 0%; transition: width 0.8s ease; position: relative; overflow: hidden; }
+  .progress-bar::after { content: ""; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 0% { left: -100%; } 100% { left: 200%; } }
+  .progress-bar.working { animation: pulse-width 2s ease-in-out infinite; }
+  @keyframes pulse-width { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
   .progress-steps { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
   .ps-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4a5280; }
   .ps-item.done { color: #22c55e; }
@@ -394,13 +398,25 @@ function setAuditProgress(pct, step, label){
     el.className="ps-item"+(i+1<n?" done":i+1===n?" active":"");
   });
 }
-function setDocProgress(pct, step, label){
-  document.getElementById("doc-bar").style.width=pct+"%";
+let _docProgressTimer = null;
+function clearDocProgressTimer(){ if(_docProgressTimer){clearInterval(_docProgressTimer);_docProgressTimer=null;} }
+function setDocProgress(pct, step, label, animate=false){
+  clearDocProgressTimer();
+  const bar = document.getElementById("doc-bar");
+  bar.style.width=pct+"%";
   document.getElementById("doc-loading-step").textContent=label;
   ["dp1","dp2","dp3","dp4"].forEach((id,i)=>{
     const n=parseInt(step); const el=document.getElementById(id);
     el.className="ps-item"+(i+1<n?" done":i+1===n?" active":"");
   });
+  if(animate && pct < 95){
+    // Avanzar lentamente de pct hasta pct+12 mientras espera la IA
+    let current = pct;
+    const target = Math.min(pct + 12, 94);
+    _docProgressTimer = setInterval(()=>{
+      if(current < target){ current += 0.3; bar.style.width=current+"%"; }
+    }, 200);
+  }
 }
 
 // ---- BLOQUEO DE FORMULARIO ----
@@ -673,17 +689,19 @@ async function generateDoc(unlocked=false){
   setDocProgress(10,1,"Procesando datos de la empresa…");
   try{
     await new Promise(r=>setTimeout(r,300));
-    setDocProgress(30,2,"Redactando secciones legales…");
+    setDocProgress(30,2,"Redactando secciones legales…", true);
     const prompt=buildDocPrompt(currentDocType,nombre,rut,rubro,email);
     const docPromise=callClaude(prompt);
-    // Avanzar la barra mientras espera
-    await new Promise(r=>setTimeout(r,2000));
-    setDocProgress(60,2,"Continuando redacción…");
-    await new Promise(r=>setTimeout(r,1500));
-    setDocProgress(80,3,"Verificando cumplimiento Ley 21.719…");
+    // Esperar 4s mostrando animación, luego actualizar texto
+    await new Promise(r=>setTimeout(r,4000));
+    setDocProgress(55,2,"Estructurando secciones jurídicas…", true);
+    await new Promise(r=>setTimeout(r,4000));
+    setDocProgress(75,3,"Verificando cumplimiento Ley 21.719…", true);
     currentDoc=await docPromise;
+    clearDocProgressTimer();
+    clearDocProgressTimer();
     setDocProgress(100,4,"¡Documento listo!");
-    await new Promise(r=>setTimeout(r,300));
+    await new Promise(r=>setTimeout(r,400));
 
     if(shouldUnlock){
       document.getElementById("doc-text-unlocked").textContent=currentDoc;
